@@ -15,6 +15,9 @@ public class ProjectManager {
     private String lastName;
     private String hireDate;
 
+    //default conttructor is mandatory!!!!
+    public ProjectManager() {
+    }
 
     public ProjectManager(String name, String lastName, String hireDate) {
         this.name = name;
@@ -54,5 +57,11 @@ public class ProjectManager {
 
     public void setHireDate(String hireDate) {
         this.hireDate = hireDate;
+    }
+
+    //
+
+    public String getFullName(){
+        return name+" "+lastName;
     }
 }

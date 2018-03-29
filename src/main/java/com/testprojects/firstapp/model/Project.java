@@ -22,8 +22,6 @@ public class Project {
     private ProjectManager projectManager;
 
 
-
-
     public Project() {
     }
 
@@ -38,6 +36,15 @@ public class Project {
         this.projectManager = projectManager;
         this.deadlineDate = deadlineDate;
         this.employees = employees;
+    }
+
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getProjectName() {
