@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Company Resources Service - Projects</title>
+</head>
+<body>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Project Name</th>
+        <th>Project Manager</th>
+        <th>Deadline Date</th>
+    </tr>
+    <tr th:each="prj : ${projects}">
+        <td th:text="${prj.id}">12</td>
+        <td th:text="${prj.projectName}">Test</td>
+        <td th:text="${prj.projectManager.getFullName()}">Test</td>
+        <td th:text="${prj.deadlineDate}">12.12.2012</td>
+
+    </tr>
+</table>
+</body>
+</html>
