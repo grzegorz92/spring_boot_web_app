@@ -1,5 +1,6 @@
 package com.testprojects.firstapp.controllers;
 
+import com.testprojects.firstapp.config.PropertiesReader;
 import com.testprojects.firstapp.repositories.EmployeeRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,6 +11,7 @@ public class EmployeeController {
 
     private EmployeeRepository employeeRepository;
 
+
     public EmployeeController(EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;
     }
@@ -17,7 +19,7 @@ public class EmployeeController {
     @RequestMapping("/employees")
     public String getEmployees(Model model){
 
-        model.addAttribute("employees", employeeRepository.findAll() );
+        model.addAttribute("employees", employeeRepository.findAll());
 
         return "employees";
     }

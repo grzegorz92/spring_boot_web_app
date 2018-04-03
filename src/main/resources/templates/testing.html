@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Properties reader and editor</title>
+</head>
+<body>
+
+
+<h3>Data loaded from properties</h3>
+<hr>
+<br>
+<table>
+    <tr>
+        <th>Key</th>
+        <th>Value</th>
+        <th> New Value</th>
+    </tr>
+
+    <tr th:each="e : ${props.entrySet()}">
+        <td th:text="${e.getKey()}">Key</td>
+        <td th:text="${e.getValue()}">Value</td>
+        <td th:text="${props.}">Value</td>
+        <td>New Value</td>
+    </tr>
+</table>
+
+
+
+</body>
+</html>

@@ -9,39 +9,29 @@ import java.util.Set;
 
 @Entity
 //@Table
-public class Employee {
+public class TestEmployee {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
     private String lastName;
     private String hireDate;
     private String salary;
 
-    @ManyToMany(mappedBy = "employees")
-    private Set<Project> projects = new HashSet<>();
 
 
-
-    public Employee() {
+    public TestEmployee() {
     }
 
-    public Employee(String name, String lastName, String hireDate, String salary) {
+    public TestEmployee(String name, String lastName, String hireDate, String salary) {
         this.name = name;
         this.lastName = lastName;
         this.hireDate = hireDate;
         this.salary = salary;
     }
 
-    public Employee(String name, String lastName, String hireDate, String salary, Set<Project> projects) {
-        this.name = name;
-        this.lastName = lastName;
-        this.hireDate = hireDate;
-        this.salary = salary;
-       this.projects = projects;
 
-    }
 
     public Integer getId() {
         return id;
@@ -83,23 +73,15 @@ public class Employee {
         this.salary = salary;
     }
 
-    public Set<Project> getProjects() {
-        return projects;
-    }
-
-    public void setProjects(Set<Project> projects) {
-        this.projects = projects;
-    }
 
     @Override
     public String toString() {
-        return "Employee{" +
+        return "TestEmployee{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", hireDate='" + hireDate + '\'' +
                 ", salary='" + salary + '\'' +
-                ", projects=" + projects +
                 '}';
     }
 }
