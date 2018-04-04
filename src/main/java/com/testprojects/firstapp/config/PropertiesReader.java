@@ -12,16 +12,31 @@ import java.util.*;
 @Component// without this intellij says "could not autowire no beans of type found"
 public class PropertiesReader {
 
-    Properties props = new Properties();
-    InputStream in;
+    private Properties props = new Properties();
+    private InputStream in;
+
+    public void setIn(InputStream in) {
+        this.in = in;
+    }
+
+    public InputStream getIn() {
+        return in;
+    }
 
     public Map<String,String> loadProperties() {
 
-        File file = new File("C:\\Users\\grjk\\Desktop\\properties\\employees.properties");
+// Reading file from predefined path
+//        File file = new File("C:\\Users\\grjk\\Desktop\\properties\\employees.properties");
+//
+//        try (InputStream in = new FileInputStream(file)) {
+//            props.load(in);
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
-        try (InputStream in = new FileInputStream(file)) {
+        try {
             props.load(in);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -42,19 +57,6 @@ public class PropertiesReader {
         return map;
     }
 
-    public void saveProperties(Map<String, String> map){
-        File file = new File("C:\\Users\\grjk\\Desktop\\properties\\employees.properties");
 
-        try (InputStream in = new FileInputStream(file)) {
-            props.load(in);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-
-
-    }
 }
 
