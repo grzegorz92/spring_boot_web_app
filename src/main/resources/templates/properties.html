@@ -3,27 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <title>Properties reader and editor</title>
+    <link type="text/css" href="css/index.css" rel="stylesheet" />
+
+    <style>
+        .table {
+            border: 1px solid #000000;
+            background-color: #EEEEEE;
+            width: 60%;
+            text-align: center;
+            border-collapse: collapse;
+        }
+
+        .table td, .table th {
+            border: 1px solid #AAAAAA;
+            padding: 3px 2px;
+        }
+
+        .table th {
+            background: #030D2B;
+            background: -moz-linear-gradient(top, #424960 0%, #1c2540 66%, #030D2B 100%);
+            background: -webkit-linear-gradient(top, #424960 0%, #1c2540 66%, #030D2B 100%);
+            background: linear-gradient(to bottom, #424960 0%, #1c2540 66%, #030D2B 100%);
+            color: white;
+        }
+
+    </style>
+
 </head>
 <body>
 
 
-<h3>Data loaded from properties</h3>
+<h3 align="center">Properties files reader and editor</h3>
 <hr>
 <br>
 
-<table>
+
+<br>
+
+<table class="table" align="center">
     <tr>
         <th>Key</th>
         <th>Value</th>
         <th> New Value</th>
     </tr>
 
-    <tr th:each="e : ${props.entrySet()}">
-        <td th:text="${e.getKey()}">Key</td>
-        <td th:text="${e.getValue()}">Value</td>
-        <td>New Value </td>
-    </tr>
+
+
+        <tr th:each="e : ${props.entrySet()}">
+            <td th:text="${e.getKey()}">Key</td>
+            <td th:text="${e.getValue()}">Value</td>
+            <td>
+
+            </td>
+
 </table>
+
+<br>
+<form action="/uploading" method="post" enctype="multipart/form-data">
+    <input type="file" name="file"/><br>
+    <input type="submit" name="Upload" value="Upload"/>
+</form>
+<hr>
+<h3>Change log</h3>
 
 </body>
 </html>

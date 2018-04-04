@@ -1,8 +1,6 @@
 package com.testprojects.firstapp.config;
 
 import org.springframework.stereotype.Component;
-
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -24,16 +22,17 @@ public class PropertiesReader {
 
     public Map<String,String> loadProperties() {
 
+        if (this.in != null) {
+            props.clear();//clear previous data, before load new .properties file
 
-        try {
-            props.load(in);
-        } catch (IOException e) {
-            e.printStackTrace();
+            try {
+                props.load(in);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
-
         Map<String,String> map = new HashMap<>();
-
         Enumeration<?> e = props.propertyNames();
 
         while (e.hasMoreElements()) {
@@ -42,6 +41,15 @@ public class PropertiesReader {
         }
 
        return map;
+    }
+
+    public void editProperties(String key, String value){
+        props.setProperty(key, value);
+    }
+
+    public void removeProperties(String key){
+
+        props.remove(key);
     }
 
 
