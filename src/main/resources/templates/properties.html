@@ -26,13 +26,17 @@
             color: white;
         }
 
+        tr.noBorder td {
+            border: 0;
+        }
+
     </style>
 
 </head>
 <body>
 
 
-<h3 align="center">Properties files reader and editor</h3>
+<h3 align="center">Properties Files Editor</h3>
 <hr>
 <br>
 
@@ -53,15 +57,16 @@
             <td th:text="${e.getValue()}">Value</td>
             <td>
                 <form action="/edit" method="post" enctype="multipart/form-data">
-                <input type="text" name="value" placeholder="Enter new value"/>
+                <input type="text" name="newValue" placeholder="Enter new value"/>
                 <input type="hidden" name="key" th:value="${e.getKey()}"/>
+                    <input type="hidden" name="oldValue" th:value="${e.getValue()}"/>
                 <input type="submit" name="submit" value="Save"/>
-                <a th:href="@{/delete(key = ${e.getKey()})}"><button type="button">Delete</button></a>
+                <a th:href="@{/delete(key = ${e.getKey()}, value=${e.getValue()})}"><button type="button">Delete</button></a>
                 </form>
             </td>
         </tr>
 
-    <form action="/edit" method="post" enctype="multipart/form-data">
+    <form action="/add" method="post" enctype="multipart/form-data">
         <tr>
             <td><input type="text" name="key" placeholder="Enter new Key" size="12"/></td>
             <td><input type="text" name="value" placeholder="Enter new Value" size="12"/></td>
@@ -71,13 +76,24 @@
 
 
 </table>
-<br>
+<br><hr>
 <form action="/uploading" method="post" enctype="multipart/form-data">
     <input type="file" name="file"/><br>
     <input type="submit" name="Upload" value="Upload"/>
 </form>
 <hr>
-<h3>Change logs</h3>
+
+<table class="table" align="center">
+    <tr>
+        <th>Changes Log</th>
+    </tr>
+
+    <tr class="noBorder" th:each="log: ${changesLog}">
+        <td th:text="${log}"></td>
+    </tr>
+</table>
+
+
 
 </body>
 </html>
