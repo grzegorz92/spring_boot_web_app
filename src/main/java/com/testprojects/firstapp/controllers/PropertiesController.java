@@ -25,6 +25,7 @@ public class PropertiesController {
 
         try {
             pr.setIn(file.getInputStream());
+            pr.getFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -36,23 +37,33 @@ public class PropertiesController {
     public String readProperties(Model model){
 
        model.addAttribute("props", pr.loadProperties());
+        //System.out.println("\nHERE"+pr.loadProperties());
 
         return "properties";
     }
 
     @RequestMapping("/delete")
-    public String deleteProperties(@RequestParam String key){
+    public String deleteProperties(@RequestParam String key, Model model){
 
+        //System.out.println(pr.loadProperties());
         pr.removeProperties(key);
+
+        //System.out.println(key);
+       // System.out.println(pr.loadProperties());
+        System.out.println("IN DELETE CONTROLLER");
 
         return "redirect:/properties";
     }
 
-//    public String editProperties(){
-//
-//        pr.editProperties(k, v);
-//        return "redirect:/properties";
-//    }
+
+    @RequestMapping("/edit")
+    public String editProperties(@RequestParam("key") String k, @RequestParam("value") String v){
+
+        pr.editProperties(k, v);
+        return "redirect:/properties";
+    }
+
+
 
 
 }

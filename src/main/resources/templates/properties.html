@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Properties reader and editor</title>
-    <link type="text/css" href="css/index.css" rel="stylesheet" />
 
     <style>
         .table {
@@ -44,7 +43,7 @@
     <tr>
         <th>Key</th>
         <th>Value</th>
-        <th> New Value</th>
+        <th> Edit</th>
     </tr>
 
 
@@ -53,18 +52,32 @@
             <td th:text="${e.getKey()}">Key</td>
             <td th:text="${e.getValue()}">Value</td>
             <td>
-
+                <form action="/edit" method="post" enctype="multipart/form-data">
+                <input type="text" name="value" placeholder="Enter new value"/>
+                <input type="hidden" name="key" th:value="${e.getKey()}"/>
+                <input type="submit" name="submit" value="Save"/>
+                <a th:href="@{/delete(key = ${e.getKey()})}"><button type="button">Delete</button></a>
+                </form>
             </td>
+        </tr>
+
+    <form action="/edit" method="post" enctype="multipart/form-data">
+        <tr>
+            <td><input type="text" name="key" placeholder="Enter new Key" size="12"/></td>
+            <td><input type="text" name="value" placeholder="Enter new Value" size="12"/></td>
+            <td><input type="submit" name="submit" value="Save"/></td>
+        </tr>
+    </form>
+
 
 </table>
-
 <br>
 <form action="/uploading" method="post" enctype="multipart/form-data">
     <input type="file" name="file"/><br>
     <input type="submit" name="Upload" value="Upload"/>
 </form>
 <hr>
-<h3>Change log</h3>
+<h3>Change logs</h3>
 
 </body>
 </html>

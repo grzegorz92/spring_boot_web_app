@@ -20,7 +20,7 @@ public class PropertiesReader {
         return in;
     }
 
-    public Map<String,String> loadProperties() {
+    public void getFile(){
 
         if (this.in != null) {
             props.clear();//clear previous data, before load new .properties file
@@ -31,15 +31,17 @@ public class PropertiesReader {
                 e.printStackTrace();
             }
         }
+    }
+
+    public Map<String,String> loadProperties() {
 
         Map<String,String> map = new HashMap<>();
         Enumeration<?> e = props.propertyNames();
 
         while (e.hasMoreElements()) {
             String key = (String) e.nextElement();
-            map.put(key,props.getProperty(key));
+            map.put(key, props.getProperty(key));
         }
-
        return map;
     }
 
@@ -48,7 +50,6 @@ public class PropertiesReader {
     }
 
     public void removeProperties(String key){
-
         props.remove(key);
     }
 
