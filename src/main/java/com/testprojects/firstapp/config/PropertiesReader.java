@@ -1,8 +1,9 @@
 package com.testprojects.firstapp.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
-import java.io.IOException;
-import java.io.InputStream;
+
+import java.io.*;
 import java.util.*;
 
 
@@ -13,13 +14,10 @@ public class PropertiesReader {
     private ChangesLog log = new ChangesLog();
     private InputStream in;
 
-    public void setIn(InputStream in) {
-        this.in = in;
-    }
 
-    public InputStream getIn() {
-        return in;
-    }
+
+
+    //LOAD AND SAVE PROPERTIES FILE
 
     public void getFile(String fileName){
 
@@ -37,9 +35,46 @@ public class PropertiesReader {
         log.loadFile(fileName);
     }
 
-    public void saveFile(){
+    public void saveFileAsProperties(OutputStream os){
+
+        try {
+            props.store(os,null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//
+//                String path="path";
+//        try (FileOutputStream fout = new FileOutputStream(path)) {
+//
+//            props.store(fout, null);
+//
+////            ObjectOutputStream oos = new ObjectOutputStream(fout);
+////            oos.writeObject(a);
+////            oos.flush();// use it to be sure that data is written
+//
+//        }catch(FileNotFoundException e){
+//            e.printStackTrace();
+//        }catch(IOException e){
+//            e.printStackTrace();
+//        }
+    }
+
+    public void saveFileAsJson(OutputStream os){
+//        ObjectMapper mapper = new ObjectMapper();
+//
+//        try {
+//            mapper.writeValue(os, props);
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+    }
+
+    public void saveFileAsYaml(){
 
     }
+
+    //LOADING PROPERTIES FROM FILE
 
     public Map<String,String> loadProperties() {
 
@@ -52,6 +87,9 @@ public class PropertiesReader {
         }
        return map;
     }
+
+
+    //PROPERTIES EDITIONS
 
     public void editProperties(String key, String oldValue, String newValue){
         props.setProperty(key, newValue);
@@ -90,12 +128,22 @@ public class PropertiesReader {
         log.removeProperty(key, value);
     }
 
+    //OTHERS
+
     public List<String> getLog() {
         return log.getChangesList();
     }
 
     public Properties getProps() {
         return props;
+    }
+
+    public void setIn(InputStream in) {
+        this.in = in;
+    }
+
+    public InputStream getIn() {
+        return in;
     }
 }
 

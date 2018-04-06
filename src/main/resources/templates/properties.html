@@ -74,13 +74,26 @@
         </tr>
     </form>
 
-
 </table>
 <br><hr>
-<form action="/uploading" method="post" enctype="multipart/form-data">
-    <input type="file" name="file"/><br>
-    <input type="submit" name="Upload" value="Upload"/>
-</form>
+
+<table align="center">
+    <tr>
+        <td>
+            <form action="/uploading" method="post" enctype="multipart/form-data">
+                <input type="file" name="file" label="Choose file"/><br>
+                <input type="submit" name="Upload" value="Upload"/>
+            </form>
+        </td>
+
+        <td>
+            <a href="/save_properties"><button type="button">Save as .properties</button></a><br>
+            <a href="/save_json"><button type="button">Save as .JSON</button></a><br>
+            <a href="/save_yaml"><button type="button">Save as .YAML</button> </a>
+        </td>
+    </tr>
+</table>
+
 <hr>
 
 <table class="table" align="center">

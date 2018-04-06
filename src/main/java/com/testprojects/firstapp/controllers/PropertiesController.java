@@ -1,12 +1,12 @@
 package com.testprojects.firstapp.controllers;
 
-import com.testprojects.firstapp.config.ChangesLog;
 import com.testprojects.firstapp.config.PropertiesReader;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
@@ -14,6 +14,9 @@ import java.io.IOException;
 public class PropertiesController {
 
     private PropertiesReader pr; //reading properties file
+    private String loadedFileName="unknown_file.properties";
+
+
 
     public PropertiesController(PropertiesReader pr) {
         this.pr = pr;
@@ -28,6 +31,9 @@ public class PropertiesController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        loadedFileName = file.getOriginalFilename();
+
         return "redirect:/properties";
     }
 
@@ -36,6 +42,7 @@ public class PropertiesController {
 
        model.addAttribute("props", pr.loadProperties());
        model.addAttribute("changesLog", pr.getLog());
+
         return "properties";
     }
 
@@ -61,13 +68,36 @@ public class PropertiesController {
         return "redirect:/properties";
     }
 
-    @RequestMapping("/save_file")
-    public String saveFile(Model model){
-        model.addAttribute("props", pr.getProps());
-        System.out.println(pr.getProps());
+    @RequestMapping("/save_properties")
+    public void saveFileAsProperties(HttpServletResponse response){
+
+        try {
+            response.setHeader("Content-disposition", "attachment; filename="+loadedFileName); // instead of this, in front: <a href="/save_properties" download="filename.properties">
+            pr.saveFileAsProperties(response.getOutputStream());
+            response.flushBuffer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+      }
+
+    @RequestMapping("/save_yaml")
+    public void saveFileAsYaml(){
+
+
+//        try {
+//            pr.saveFileAsJson(response.getOutputStream());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+    }
+
+    @RequestMapping("/save_json")
+    public String saveFileAsJson(){
 
         return "redirect:/properties";
     }
+
+
 
 
 

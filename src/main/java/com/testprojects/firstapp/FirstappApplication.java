@@ -20,19 +20,19 @@ public class FirstappApplication {
 	}
 
 	// CSS Linking enabling
-	@Bean
-	public ViewResolver viewResolver() {
-		ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
-		templateResolver.setTemplateMode("XHTML");
-		templateResolver.setPrefix("views/");
-		templateResolver.setSuffix(".html");
-
-		SpringTemplateEngine engine = new SpringTemplateEngine();
-		engine.setTemplateResolver(templateResolver);
-
-		ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
-		viewResolver.setTemplateEngine(engine);
-		return viewResolver;
-	}
+//	@Bean
+//	public ViewResolver viewResolver() {
+//		ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+//		templateResolver.setTemplateMode("XHTML");
+//		templateResolver.setPrefix("views/");
+//		templateResolver.setSuffix(".html");
+//
+//		SpringTemplateEngine engine = new SpringTemplateEngine();
+//		engine.setTemplateResolver(templateResolver);
+//
+//		ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
+//		viewResolver.setTemplateEngine(engine);
+//		return viewResolver;
+//	}
 }
 

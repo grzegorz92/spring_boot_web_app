@@ -25,7 +25,6 @@ public class ChangesLog {
         changesList.add("CHANGES LOG for: "+getCurrentDate());
         changesList.add("LOADED FILE: "+fileName);
         changesList.add("EDITIONS:");
-
     }
 
     public void editProperty(String key, String oldValue, String newValue){
