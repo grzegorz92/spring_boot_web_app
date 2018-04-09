@@ -2,11 +2,13 @@ package com.testprojects.firstapp.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.util.*;
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 
 
 @Component
@@ -15,7 +17,8 @@ public class PropertiesReader {
     private Properties props = new Properties();
     private ChangesLog log = new ChangesLog();
     private InputStream in;
-    private Logger logger = Logger.getLogger(getClass().getName());
+    //private Logger logger = Logger.getLogger(getClass().getName());
+    private Logger logger = LoggerFactory.getLogger(getClass().getName());
 
 
 
