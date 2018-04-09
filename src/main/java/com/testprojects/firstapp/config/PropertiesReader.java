@@ -1,6 +1,7 @@
 package com.testprojects.firstapp.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -42,36 +43,27 @@ public class PropertiesReader {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//
-//                String path="path";
-//        try (FileOutputStream fout = new FileOutputStream(path)) {
-//
-//            props.store(fout, null);
-//
-////            ObjectOutputStream oos = new ObjectOutputStream(fout);
-////            oos.writeObject(a);
-////            oos.flush();// use it to be sure that data is written
-//
-//        }catch(FileNotFoundException e){
-//            e.printStackTrace();
-//        }catch(IOException e){
-//            e.printStackTrace();
-//        }
     }
 
     public void saveFileAsJson(OutputStream os){
-//        ObjectMapper mapper = new ObjectMapper();
-//
-//        try {
-//            mapper.writeValue(os, props);
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            mapper.writeValueAsString(props);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void saveFileAsYaml(){
 
+    public void saveFileAsYaml(OutputStream os){
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+
+        try {
+            mapper.writeValue(os, props);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     //LOADING PROPERTIES FROM FILE
@@ -134,16 +126,9 @@ public class PropertiesReader {
         return log.getChangesList();
     }
 
-    public Properties getProps() {
-        return props;
-    }
-
     public void setIn(InputStream in) {
         this.in = in;
     }
 
-    public InputStream getIn() {
-        return in;
-    }
 }
 

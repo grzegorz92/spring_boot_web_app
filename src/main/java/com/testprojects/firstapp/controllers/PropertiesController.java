@@ -16,8 +16,6 @@ public class PropertiesController {
     private PropertiesReader pr; //reading properties file
     private String loadedFileName="unknown_file.properties";
 
-
-
     public PropertiesController(PropertiesReader pr) {
         this.pr = pr;
     }
@@ -81,26 +79,25 @@ public class PropertiesController {
       }
 
     @RequestMapping("/save_yaml")
-    public void saveFileAsYaml(){
+    public void saveFileAsYaml(HttpServletResponse response){
 
-
-//        try {
-//            pr.saveFileAsJson(response.getOutputStream());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            response.setHeader("Content-disposition", "attachment; filename=new_file.yaml");
+            pr.saveFileAsYaml(response.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @RequestMapping("/save_json")
-    public String saveFileAsJson(){
+    public void saveFileAsJson(HttpServletResponse response){
 
-        return "redirect:/properties";
+        try {
+            response.setHeader("Content-disposition", "attachment; filename=new_file.json");
+            pr.saveFileAsJson(response.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-
-
-
-
-
-
 }
 

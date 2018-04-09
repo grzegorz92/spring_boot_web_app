@@ -57,7 +57,7 @@
             <td th:text="${e.getValue()}">Value</td>
             <td>
                 <form action="/edit" method="post" enctype="multipart/form-data">
-                <input type="text" name="newValue" placeholder="Enter new value"/>
+                <input type="text" name="newValue" placeholder="Enter new value" size="10"/>
                 <input type="hidden" name="key" th:value="${e.getKey()}"/>
                     <input type="hidden" name="oldValue" th:value="${e.getValue()}"/>
                 <input type="submit" name="submit" value="Save"/>
