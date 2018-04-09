@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.util.*;
+import java.util.logging.Logger;
 
 
 @Component
@@ -14,6 +15,7 @@ public class PropertiesReader {
     private Properties props = new Properties();
     private ChangesLog log = new ChangesLog();
     private InputStream in;
+    private Logger logger = Logger.getLogger(getClass().getName());
 
 
 
@@ -34,6 +36,7 @@ public class PropertiesReader {
         }
         //System.out.println("FILE LOADED: "+fileName);
         log.loadFile(fileName);
+        logger.info("FILE LOADED: "+fileName);
     }
 
     public void saveFileAsProperties(OutputStream os){
@@ -90,6 +93,7 @@ public class PropertiesReader {
         //Blokada przed dodaniem wpisu do loga, gdy user dodaje te sama wartosc do klucza
         if (!oldValue.equals(newValue)){
             log.editProperty(key, oldValue, newValue);
+            logger.info("EDITED: "+key+"###"+oldValue+"="+newValue);
         }
 
     }
@@ -99,6 +103,7 @@ public class PropertiesReader {
         //Blokada przed dodaniem wpisu do loga, gdy ktos stara sie dodac ta sama lub inna wartosc do instniejacego juz keya
         if (props.getProperty(key) == null) {
             log.addProperty(key, value);
+            logger.info("ADDED: "+key+"###"+value);
         }
 
         //blokada przed wykonaniem operacji EDYCJI w polu DODAJ.
@@ -118,6 +123,7 @@ public class PropertiesReader {
         props.remove(key);
         //System.out.println("REMOVED: "+key);
         log.removeProperty(key, value);
+        logger.info("REMOVED: "+key+"###"+value);
     }
 
     //OTHERS
