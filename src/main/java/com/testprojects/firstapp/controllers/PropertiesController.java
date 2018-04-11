@@ -99,5 +99,16 @@ public class PropertiesController {
             e.printStackTrace();
         }
     }
+
+    @RequestMapping("/download_log")
+    public void downloadLog(HttpServletResponse response){
+
+        try {
+            response.setHeader("Content-disposition", "attachment; filename=audit_log.log");
+            pr.downloadLog(response.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
 

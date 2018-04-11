@@ -5,6 +5,8 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.util.*;
@@ -71,6 +73,50 @@ public class PropertiesReader {
             e.printStackTrace();
         }
     }
+
+    //Download audit_log file
+
+    public void downloadLog(OutputStream os){
+
+//        List<String> logList = new ArrayList<>();
+//        String ln; //Has to be used, otherwise bufferedReader doesn't read all of the lines
+//
+//        try (BufferedReader br = new BufferedReader(new FileReader("logs/audit_log.log"))) {
+//
+//            while((ln = br.readLine())!=null){
+//                logList.add(ln);
+//            }
+//        }catch(FileNotFoundException e){
+//            e.printStackTrace();
+//        } catch(IOException e){
+//            e.printStackTrace();
+//        }
+//
+//        PrintWriter pw = new PrintWriter(os);
+//
+//        for(String itr: logList){
+//            pw.println(itr);
+//        }
+//
+//        pw.close();
+        /////
+
+        //Spring method that copy inputStream(here internal audit_log) to outputstream(audit_log downloaded by user)
+        FileInputStream in = null;
+        try {
+            in = new FileInputStream("logs/audit_log.log");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            FileCopyUtils.copy(in,os);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     //LOADING PROPERTIES FROM FILE
 
