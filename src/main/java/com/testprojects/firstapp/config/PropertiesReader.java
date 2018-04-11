@@ -6,11 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.*;
 import java.util.*;
-//import java.util.logging.Logger;
+
 
 
 @Component
@@ -23,10 +21,7 @@ public class PropertiesReader {
     private Logger logger = LoggerFactory.getLogger(getClass().getName());
 
 
-
-
     //LOAD AND SAVE PROPERTIES FILE
-
     public void getFile(String fileName){
 
         if (this.in != null) {
@@ -39,7 +34,6 @@ public class PropertiesReader {
                 e.printStackTrace();
             }
         }
-        //System.out.println("FILE LOADED: "+fileName);
         log.loadFile(fileName);
         logger.info("FILE LOADED: "+fileName);
     }
@@ -75,7 +69,6 @@ public class PropertiesReader {
     }
 
     //Download audit_log file
-
     public void downloadLog(OutputStream os){
 
 //        List<String> logList = new ArrayList<>();
@@ -119,7 +112,6 @@ public class PropertiesReader {
 
 
     //LOADING PROPERTIES FROM FILE
-
     public Map<String,String> loadProperties() {
 
         Map<String,String> map = new HashMap<>();
@@ -134,7 +126,6 @@ public class PropertiesReader {
 
 
     //PROPERTIES EDITIONS
-
     public void editProperties(String key, String oldValue, String newValue){
         props.setProperty(key, newValue);
         //System.out.println("EDITED: "+key+"###"+oldValue+"="+newValue);
@@ -164,9 +155,7 @@ public class PropertiesReader {
         //jesli nie chcemy blokady Edycji w polu Dodawania, konieczne jest zapisywanie
         //Loga w SECIE nie LISCIE, zeby nie dodawal do LOGA takich samych zmian
 
-        //System.out.println("ADDED: "+key+"###"+value);
-
-    }
+            }
 
     public void removeProperties(String key, String value){
         props.remove(key);
@@ -176,7 +165,6 @@ public class PropertiesReader {
     }
 
     //OTHERS
-
     public List<String> getLog() {
         return log.getChangesList();
     }
