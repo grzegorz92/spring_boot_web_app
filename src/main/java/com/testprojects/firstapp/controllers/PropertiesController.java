@@ -1,6 +1,6 @@
 package com.testprojects.firstapp.controllers;
 
-import com.testprojects.firstapp.config.PropertiesReader;
+import com.testprojects.firstapp.services.PropertiesReader;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
