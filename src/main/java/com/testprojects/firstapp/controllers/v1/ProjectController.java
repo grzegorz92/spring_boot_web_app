@@ -1,6 +1,6 @@
-package com.testprojects.firstapp.controllers;
+package com.testprojects.firstapp.controllers.v1;
 
-import com.testprojects.firstapp.repositories.ProjectRepository;
+import com.testprojects.firstapp.repositories.v1.ProjectRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;

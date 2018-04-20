@@ -1,4 +1,4 @@
-package com.testprojects.firstapp.config;
+package com.testprojects.firstapp.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -72,7 +72,7 @@ public class PropertiesReader {
     public void downloadLog(OutputStream os){
 
 //        List<String> logList = new ArrayList<>();
-//        String ln; //Has to be used, otherwise bufferedReader doesn't read all of the lines
+//        String ln; //Has to be used, otherwise bufferedReader doesn'Props read all of the lines
 //
 //        try (BufferedReader br = new BufferedReader(new FileReader("logs/audit_log.log"))) {
 //

@@ -1,8 +1,8 @@
 package com.testprojects.firstapp.bootstrap;
 
-import com.testprojects.firstapp.config.PropertyConfig;
-import com.testprojects.firstapp.model.TestEmployee;
-import com.testprojects.firstapp.repositories.TestEmployeeRepository;
+import com.testprojects.firstapp.services.v1.PropertyConfig;
+import com.testprojects.firstapp.model.v1.TestEmployee;
+import com.testprojects.firstapp.repositories.v1.TestEmployeeRepository;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;

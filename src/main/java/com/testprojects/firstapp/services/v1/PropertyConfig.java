@@ -1,13 +1,9 @@
-package com.testprojects.firstapp.config;
+package com.testprojects.firstapp.services.v1;
 
 
-import com.testprojects.firstapp.model.Employee;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 import java.util.ArrayList;
 import java.util.List;

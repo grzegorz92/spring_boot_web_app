@@ -1,11 +1,11 @@
 package com.testprojects.firstapp.bootstrap;
 
-import com.testprojects.firstapp.model.Employee;
-import com.testprojects.firstapp.model.Project;
-import com.testprojects.firstapp.model.ProjectManager;
-import com.testprojects.firstapp.repositories.EmployeeRepository;
-import com.testprojects.firstapp.repositories.ProjectManagerRepository;
-import com.testprojects.firstapp.repositories.ProjectRepository;
+import com.testprojects.firstapp.model.v1.Employee;
+import com.testprojects.firstapp.model.v1.Project;
+import com.testprojects.firstapp.model.v1.ProjectManager;
+import com.testprojects.firstapp.repositories.v1.EmployeeRepository;
+import com.testprojects.firstapp.repositories.v1.ProjectManagerRepository;
+import com.testprojects.firstapp.repositories.v1.ProjectRepository;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;

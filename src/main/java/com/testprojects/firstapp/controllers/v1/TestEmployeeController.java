@@ -1,13 +1,9 @@
-package com.testprojects.firstapp.controllers;
+package com.testprojects.firstapp.controllers.v1;
 
-import com.testprojects.firstapp.config.PropertyConfig;
-import com.testprojects.firstapp.repositories.TestEmployeeRepository;
+import com.testprojects.firstapp.repositories.v1.TestEmployeeRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.List;
 
 
 @Controller

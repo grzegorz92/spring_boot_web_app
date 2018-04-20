@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -53,16 +54,16 @@ public class PropertiesController {
 
 
     @RequestMapping("/edit")
-    public String editProperties(@RequestParam("key") String k, @RequestParam("oldValue") String ov, @RequestParam("newValue") String nv){
+    public String editProperties(@RequestParam("key") String key, @RequestParam("oldValue") String ov, @RequestParam("newValue") String nv){
 
-        pr.editProperties(k, ov, nv);
+        pr.editProperties(key, ov, nv);
         return "redirect:/properties";
     }
 
     @RequestMapping("/add")
-    public String addProperties(@RequestParam("key") String k, @RequestParam("value") String v){
+    public String addProperties(@RequestParam("key") String key, @RequestParam("value") String value){
 
-        pr.addProperties(k, v);
+        pr.addProperties(key, value);
         return "redirect:/properties";
     }
 

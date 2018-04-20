@@ -1,4 +1,4 @@
-package com.testprojects.firstapp.controllers;
+package com.testprojects.firstapp.controllers.v1;
 
 
 import org.springframework.stereotype.Controller;

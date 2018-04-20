@@ -1,6 +1,6 @@
-package com.testprojects.firstapp.repositories;
+package com.testprojects.firstapp.repositories.v1;
 
-import com.testprojects.firstapp.model.Employee;
+import com.testprojects.firstapp.model.v1.Employee;
 import org.springframework.data.repository.CrudRepository;
 
 //for spring data

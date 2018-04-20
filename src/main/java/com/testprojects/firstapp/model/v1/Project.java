@@ -1,4 +1,4 @@
-package com.testprojects.firstapp.model;
+package com.testprojects.firstapp.model.v1;
 
 
 import javax.persistence.*;
