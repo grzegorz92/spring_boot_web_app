@@ -42,6 +42,8 @@ public class PropertiesController {
        model.addAttribute("props", pr.loadProperties());
        model.addAttribute("changesLog", pr.getLog());
 
+       // System.out.println(pr.loadProperties());
+
         return "properties";
     }
 

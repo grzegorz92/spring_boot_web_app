@@ -43,15 +43,12 @@ public class PropertiesControllerTest {
 
 
 
-
-
     PropertiesController propertiesController;
 
     MockMvc mockMvc; //mocking MVC infrastructure
 
     @Before
     public void setUp(){
-
 
         propertiesController = new PropertiesController(pr);
         mockMvc = MockMvcBuilders.standaloneSetup(propertiesController).build(); //mocMvc configuration
@@ -233,6 +230,8 @@ public class PropertiesControllerTest {
     @Test
     public void readProperties() throws Exception {
 
+
+
         Map<String, String> properties = new HashMap<>();
         properties.put("Name","John");
         properties.put("Last_Name", "Smith");
@@ -241,12 +240,27 @@ public class PropertiesControllerTest {
         log.add("Log1");
         log.add("Log2");
 
-//        mockMvc.perform(get("/properties"))
-//                .andExpect(status().isOk())
-//               // .andExpect(model().attribute("props", properties))
-//               // .andExpect(model().attribute("changesLog",log))
-//                .andExpect(view().name("/properties"))
-//                .andExpect(forwardedUrl("properties"));
+        // w testach nie da sie nic dodawac do zmokowanych obiektow. jesli chcesz zeby metoda, ktora zwraca np mape zwrocila mape, to nie dajesz mock.put,
+        // tylko when(mock.zwroc_mape).thenReturn(mapa_ktora_chcesz_zeby_zmockowany_obiekt_zwrocil)
+        System.out.println("\n\nBEFORE:\n"+pr.loadProperties()); //zwroci null nawet jak dasz pr.add(..)
+
+        when(pr.loadProperties()).thenReturn(properties); //ustalone zostaje, ze zmokowany obiekt pr przy wywolaniu metody loadProperties zwroci mape properties
+
+        System.out.println("\nAFTER:\n"+pr.loadProperties());//zwroci to co zostalo ustawione w thenReturn(..)
+
+
+        when(pr.getLog()).thenReturn(log);
+
+        mockMvc.perform(get("/properties/"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(model().attribute("props",properties))//
+                //.andExpect(model().attributeExists("changesLog")) //does attribute exist?
+                .andExpect(model().attribute("changesLog",log))
+                .andExpect(view().name("properties"))
+                .andExpect(forwardedUrl("properties"));
+
+        verify(pr,atLeastOnce()).loadProperties();
 
 
     }
