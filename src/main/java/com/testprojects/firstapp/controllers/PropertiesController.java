@@ -82,7 +82,7 @@ public class PropertiesController {
       }
 
     @RequestMapping("/save_yaml")
-    public void saveFileAsYaml(HttpServletResponse response){
+    public void saveFileAsYaml(HttpServletResponse response) throws Exception {
 
         try {
             response.setHeader("Content-disposition", "attachment; filename=new_file.yaml");
@@ -93,7 +93,7 @@ public class PropertiesController {
     }
 
     @RequestMapping("/save_json")
-    public void saveFileAsJson(HttpServletResponse response){
+    public void saveFileAsJson(HttpServletResponse response) throws Exception {
 
         try {
             response.setHeader("Content-disposition", "attachment; filename=new_file.json");

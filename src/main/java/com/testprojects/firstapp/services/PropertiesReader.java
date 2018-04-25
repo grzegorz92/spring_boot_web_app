@@ -1,5 +1,6 @@
 package com.testprojects.firstapp.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.slf4j.Logger;
@@ -17,54 +18,59 @@ public class PropertiesReader {
     private Properties props = new Properties();
     private ChangesLog log = new ChangesLog();
     private InputStream in;
-    //private Logger logger = Logger.getLogger(getClass().getName());
     private Logger logger = LoggerFactory.getLogger(getClass().getName());
+    private ObjectMapper jsonMapper = new ObjectMapper();
+    private ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
 
 
     //LOAD AND SAVE PROPERTIES FILE
-    public void getFile(String fileName){
+    public void getFile(String fileName) throws IOException {
 
         if (this.in != null) {
             props.clear();//clear previous data, before load new .properties file
-            log.getChangesList().clear();
+            log.clearChangesList();
 
             try {
                 props.load(in);
             } catch (IOException e) {
-                e.printStackTrace();
+               // e.printStackTrace();
+                // new BS
+                logger.error("IOException is caught");
+                throw e;
             }
         }
         log.loadFile(fileName);
         logger.info("FILE LOADED: "+fileName);
     }
 
-    public void saveFileAsProperties(OutputStream os){
+    public void saveFileAsProperties(OutputStream os) throws IOException {
 
         try {
             props.store(os,null);
         } catch (IOException e) {
             e.printStackTrace();
+            throw e;
         }
     }
 
-    public void saveFileAsJson(OutputStream os){
-        ObjectMapper mapper = new ObjectMapper();
+    public void saveFileAsJson(OutputStream os) throws Exception {
 
         try {
-            mapper.writeValueAsString(props);
+            jsonMapper.writeValueAsString(props);
         } catch (IOException e) {
             e.printStackTrace();
+            throw e;
         }
     }
 
 
-    public void saveFileAsYaml(OutputStream os){
-        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+    public void saveFileAsYaml(OutputStream os) throws Exception {
 
         try {
-            mapper.writeValue(os, props);
+            yamlMapper.writeValue(os, props);
         } catch (IOException e) {
             e.printStackTrace();
+            throw e;
         }
     }
 
@@ -173,5 +179,25 @@ public class PropertiesReader {
         this.in = in;
     }
 
+    //setters for PropertiesReaderTest class to "connect" mocked Properties class with this one used here
+    public void setProps(Properties props) {
+        this.props = props;
+    }
+
+    public void setLog(ChangesLog log) {
+        this.log = log;
+    }
+
+    public void setLogger(Logger logger) {
+        this.logger = logger;
+    }
+
+    public void setJsonMapper(ObjectMapper jsonMapper) {
+        this.jsonMapper = jsonMapper;
+    }
+
+    public void setYamlMapper(ObjectMapper yamlMapper) {
+        this.yamlMapper = yamlMapper;
+    }
 }
 

@@ -42,4 +42,9 @@ public class ChangesLog {
     public List<String> getChangesList() {
         return changesList;
     }
+
+    public void clearChangesList(){
+
+        changesList.clear();
+    }
 }

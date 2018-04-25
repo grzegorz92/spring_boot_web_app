@@ -4,29 +4,19 @@ import com.testprojects.firstapp.services.PropertiesReader;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
-
-
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.OutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -41,11 +31,11 @@ public class PropertiesControllerTest {
     @Mock
     PropertiesReader pr;
 
+    MockMvc mockMvc; //mocking MVC infrastructure
+
 
 
     PropertiesController propertiesController;
-
-    MockMvc mockMvc; //mocking MVC infrastructure
 
     @Before
     public void setUp(){
@@ -59,8 +49,6 @@ public class PropertiesControllerTest {
         PropertiesController propertiesController;
 
      */
-
-
 
     @Test
     public void editProperties_test() throws Exception {
@@ -175,6 +163,24 @@ public class PropertiesControllerTest {
 
     }
 
+//    @Test(expected = IOException.class)
+//    public void getFile_whenMultiPartFileCantBeRead_thenIOExIsThrown() throws Exception{
+//
+//
+//        MockMultipartFile file = new MockMultipartFile("file", "originalFileName","multipart/form-data", "some_file".getBytes()); //name has to be the same as parameter name in controller!
+//
+//
+//        when(file.getInputStream()).thenThrow(IOException.class);
+//
+//        mockMvc.perform(MockMvcRequestBuilders
+//                .multipart("/uploading").file(file))
+//                .andDo(print())
+//                .andExpect(status().isFound())
+//                .andExpect(view().name("redirect:/properties"));
+//
+//       verify(pr, atLeastOnce()).setIn(file.getInputStream());
+//    }
+
     @Test
     public void saveFileAsProperties_test() throws Exception {
 
@@ -185,6 +191,21 @@ public class PropertiesControllerTest {
                 .andExpect(status().isOk());
 
         verify(pr,times(1)).saveFileAsProperties(isNotNull());
+    }
+
+    @Test(expected = IOException.class)
+    public void saveFileAsProperties_whenCantSaveFile_thenIOExIsThrown() throws Exception{
+
+        //doThrow(IOException.class).when(pr.saveFileAsProperties());
+
+//        mockMvc.perform(get("/save_properties"))
+//                .andDo(print())
+//                .andExpect(status().isOk());
+
+
+
+
+
     }
 
     @Test
