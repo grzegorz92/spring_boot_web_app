@@ -51,7 +51,6 @@ public class PropertiesReaderTest {
         pr.setLogger(this.logger);
         pr.setJsonMapper(this.mapper);
         pr.setYamlMapper(this.mapper);
-
     }
 
 

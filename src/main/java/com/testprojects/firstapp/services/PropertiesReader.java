@@ -27,7 +27,7 @@ public class PropertiesReader {
     public void getFile(String fileName) throws IOException {
 
         if (this.in != null) {
-            props.clear();//clear previous data, before load new .properties file
+            props.clear();
             log.clearChangesList();
 
             try {
@@ -77,30 +77,6 @@ public class PropertiesReader {
     //Download audit_log file
     public void downloadLog(OutputStream os) throws Exception {
 
-//        List<String> logList = new ArrayList<>();
-//        String ln; //Has to be used, otherwise bufferedReader doesn'Props read all of the lines
-//
-//        try (BufferedReader br = new BufferedReader(new FileReader("logs/audit_log.log"))) {
-//
-//            while((ln = br.readLine())!=null){
-//                logList.add(ln);
-//            }
-//        }catch(FileNotFoundException e){
-//            e.printStackTrace();
-//        } catch(IOException e){
-//            e.printStackTrace();
-//        }
-//
-//        PrintWriter pw = new PrintWriter(os);
-//
-//        for(String itr: logList){
-//            pw.println(itr);
-//        }
-//
-//        pw.close();
-        /////
-
-        //Spring method that copy inputStream(here internal audit_log) to outputstream(audit_log downloaded by user)
         FileInputStream in = null;
         try {
             in = new FileInputStream("logs/audit_log.log");
@@ -117,7 +93,6 @@ public class PropertiesReader {
         }
     }
 
-
     //LOADING PROPERTIES FROM FILE
     public Map<String,String> loadProperties() {
 
@@ -131,13 +106,10 @@ public class PropertiesReader {
        return map;
     }
 
-
     //PROPERTIES EDITIONS
     public void editProperties(String key, String oldValue, String newValue){
 
-        //System.out.println("EDITED: "+key+"###"+oldValue+"="+newValue);
-
-        //Blokada przed dodaniem wpisu do loga, gdy user dodaje te sama wartosc do klucza
+        //If the same value for given key is added nothing happens
         if (!oldValue.equals(newValue)){
             props.setProperty(key, newValue);
             log.editProperty(key, oldValue, newValue);
@@ -148,8 +120,7 @@ public class PropertiesReader {
 
     public void addProperties(String key, String value){
 
-        //blokada przed wykonaniem operacji EDYCJI w polu DODAJ i zapisaniem tego do loga
-
+        //Editing in ADD field and generating log from this operation disabled
         if (props.get(key) == null) {
             props.setProperty(key, value);
             log.addProperty(key, value);
@@ -158,8 +129,8 @@ public class PropertiesReader {
     }
 
     public void removeProperties(String key, String value){
+
         props.remove(key);
-        //System.out.println("REMOVED: "+key);
         log.removeProperty(key, value);
         logger.info("REMOVED: "+key+"###"+value);
     }
