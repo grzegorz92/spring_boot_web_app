@@ -1,4 +1,4 @@
-package com.testprojects.firstapp.controllers.v1;
+package com.testprojects.firstapp.controllers;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
