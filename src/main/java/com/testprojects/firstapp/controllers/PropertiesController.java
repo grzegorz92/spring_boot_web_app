@@ -104,7 +104,7 @@ public class PropertiesController {
     }
 
     @RequestMapping("/download_log")
-    public void downloadLog(HttpServletResponse response){
+    public void downloadLog(HttpServletResponse response) throws Exception {
 
         try {
             response.setHeader("Content-disposition", "attachment; filename=audit_log.log");

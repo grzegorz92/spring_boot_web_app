@@ -57,14 +57,14 @@ public class PropertiesReader {
 
         try {
             jsonMapper.writeValueAsString(props);
-        } catch (IOException e) {
+        } catch (JsonProcessingException e) {
             e.printStackTrace();
             throw e;
         }
     }
 
 
-    public void saveFileAsYaml(OutputStream os) throws Exception {
+    public void saveFileAsYaml(OutputStream os) throws IOException {
 
         try {
             yamlMapper.writeValue(os, props);
@@ -75,7 +75,7 @@ public class PropertiesReader {
     }
 
     //Download audit_log file
-    public void downloadLog(OutputStream os){
+    public void downloadLog(OutputStream os) throws Exception {
 
 //        List<String> logList = new ArrayList<>();
 //        String ln; //Has to be used, otherwise bufferedReader doesn'Props read all of the lines
@@ -106,14 +106,15 @@ public class PropertiesReader {
             in = new FileInputStream("logs/audit_log.log");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            throw e;
         }
 
         try {
             FileCopyUtils.copy(in,os);
         } catch (IOException e) {
             e.printStackTrace();
+            throw e;
         }
-
     }
 
 
@@ -133,11 +134,12 @@ public class PropertiesReader {
 
     //PROPERTIES EDITIONS
     public void editProperties(String key, String oldValue, String newValue){
-        props.setProperty(key, newValue);
+
         //System.out.println("EDITED: "+key+"###"+oldValue+"="+newValue);
 
         //Blokada przed dodaniem wpisu do loga, gdy user dodaje te sama wartosc do klucza
         if (!oldValue.equals(newValue)){
+            props.setProperty(key, newValue);
             log.editProperty(key, oldValue, newValue);
             logger.info("EDITED: "+key+"###"+oldValue+"="+newValue);
         }
@@ -146,22 +148,14 @@ public class PropertiesReader {
 
     public void addProperties(String key, String value){
 
-        //Blokada przed dodaniem wpisu do loga, gdy ktos stara sie dodac ta sama lub inna wartosc do instniejacego juz keya
-        if (props.getProperty(key) == null) {
+        //blokada przed wykonaniem operacji EDYCJI w polu DODAJ i zapisaniem tego do loga
+
+        if (props.get(key) == null) {
+            props.setProperty(key, value);
             log.addProperty(key, value);
             logger.info("ADDED: "+key+"###"+value);
         }
-
-        //blokada przed wykonaniem operacji EDYCJI w polu DODAJ.
-        //W przyszlosci zamiast tego moze byc wykorzystana walidacja (error message: given key already exist)
-        if (props.get(key)==value || props.get(key)==null) {
-            props.setProperty(key, value);
-        }
-
-        //jesli nie chcemy blokady Edycji w polu Dodawania, konieczne jest zapisywanie
-        //Loga w SECIE nie LISCIE, zeby nie dodawal do LOGA takich samych zmian
-
-            }
+    }
 
     public void removeProperties(String key, String value){
         props.remove(key);
