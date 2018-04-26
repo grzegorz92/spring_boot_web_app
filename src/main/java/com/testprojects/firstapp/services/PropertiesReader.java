@@ -3,6 +3,7 @@ package com.testprojects.firstapp.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.testprojects.firstapp.exception.BusinessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -24,7 +25,7 @@ public class PropertiesReader {
 
 
     //LOAD AND SAVE PROPERTIES FILE
-    public void getFile(String fileName) throws IOException {
+    public void getFile(String fileName) throws Exception {
 
         if (this.in != null) {
             props.clear();
@@ -34,8 +35,9 @@ public class PropertiesReader {
                 props.load(in);
             } catch (IOException e) {
                // e.printStackTrace();
-                // new BS
-                logger.error("IOException is caught");
+
+               logger.error("IOException is caught");
+               //throw new BusinessException("Couldn't load file");
                 throw e;
             }
         }
@@ -43,13 +45,14 @@ public class PropertiesReader {
         logger.info("FILE LOADED: "+fileName);
     }
 
-    public void saveFileAsProperties(OutputStream os) throws IOException {
+    public void saveFileAsProperties(OutputStream os) throws BusinessException {
 
         try {
             props.store(os,null);
         } catch (IOException e) {
-            e.printStackTrace();
-            throw e;
+            //e.printStackTrace();
+            //throw e;
+            throw new BusinessException("Couldn't save file");
         }
     }
 
@@ -144,7 +147,7 @@ public class PropertiesReader {
         this.in = in;
     }
 
-    //setters for PropertiesReaderTest class to "connect" mocked Properties class with this one used here
+    //setters for PropertiesReaderTest class to wire mocked Properties class with this one used here
     public void setProps(Properties props) {
         this.props = props;
     }

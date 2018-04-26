@@ -32,6 +32,8 @@ public class PropertiesRestController {
             pr.getFile(file.getOriginalFilename());
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         loadedFileName = file.getOriginalFilename();
