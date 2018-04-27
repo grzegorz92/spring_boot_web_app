@@ -4,13 +4,13 @@ import com.testprojects.firstapp.exception.BusinessException;
 import com.testprojects.firstapp.services.PropertiesReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -19,28 +19,19 @@ import java.io.IOException;
 @Controller
 public class PropertiesController {
 
-    private PropertiesReader pr; //reading properties file
+    private PropertiesReader pr;
     private String loadedFileName="unknown_file.properties";
     private Logger logger =  LoggerFactory.getLogger(getClass().getName());
+
 
     public PropertiesController(PropertiesReader pr) {
         this.pr = pr;
     }
 
     @RequestMapping("/uploading")
-    public String getFile(@RequestParam("file") MultipartFile file) {
+    public String getFile(@RequestParam("file") MultipartFile file) throws BusinessException {
 
-        try {
-            pr.setIn(file.getInputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            pr.getFile(file.getOriginalFilename());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        pr.getFile(file);
         loadedFileName = file.getOriginalFilename();
 
         return "redirect:/properties";
@@ -80,13 +71,17 @@ public class PropertiesController {
     }
 
     @RequestMapping("/save_properties")
-    public void saveFileAsProperties(HttpServletResponse response) throws Exception {
+    public void saveFileAsProperties(HttpServletResponse response){
 
-            //response=null;
             response.setHeader("Content-disposition", "attachment; filename="+loadedFileName); // instead of this, in front: <a href="/save_properties" download="filename.properties">
+
+        try {
             pr.saveFileAsProperties(response.getOutputStream());
             response.flushBuffer();
-      }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @RequestMapping("/save_yaml")
     public void saveFileAsYaml(HttpServletResponse response) throws Exception {
@@ -119,6 +114,16 @@ public class PropertiesController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(IOException.class)
+    public ModelAndView iOExHandler(){
+
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("ER");
+        return mav;
     }
 
 }

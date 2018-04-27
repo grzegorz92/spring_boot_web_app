@@ -2,6 +2,7 @@ package com.testprojects.firstapp.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.testprojects.firstapp.exception.BusinessException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,6 +11,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.io.*;
 import java.util.*;
 import org.slf4j.Logger;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.verify;
@@ -24,8 +27,7 @@ public class PropertiesReaderTest {
     @Mock
     Properties properties;
 
-    @Mock
-    InputStream in;
+
 
     @Mock
     Logger logger;
@@ -36,6 +38,9 @@ public class PropertiesReaderTest {
 
     @Mock
     ObjectMapper mapper;
+
+    @Mock
+    MockMultipartFile file;
 
 
 
@@ -51,77 +56,48 @@ public class PropertiesReaderTest {
         pr.setLogger(this.logger);
         pr.setJsonMapper(this.mapper);
         pr.setYamlMapper(this.mapper);
+        file = new MockMultipartFile("file", "originalFileName","multipart/form-data", "hello".getBytes());
     }
 
 
     @Test
-    public void getFile_whenInputStreamIsNull_thenPropsClearIsNeverInvoked() throws Exception {
+    public void getFile_clearingPropertiesMethodInvocation_verifying() throws BusinessException {
 
-        pr.setIn(null);
-        pr.getFile("File Name");
-        verify(properties,never()).clear();
+        pr.getFile(file);
+        verify(properties,times(1)).clear();
     }
 
     @Test
-    public void getFile_whenInputStreamIsNull_thenLogClearChangesListIsNeverInvoked() throws Exception {
+    public void getFile_whenIOExceptionIsNotCaught_LoadingPropertiesMethodIsInvoke() throws BusinessException, IOException { //<- ????
 
-        pr.setIn(null);
-        pr.getFile("File Name");
-        verify(log,never()).clearChangesList();
-    }
-
-    @Test
-    public void getFile_whenInputStreamIsNotNull_thenPropsClearIsInvoked() throws Exception {
-
-       pr.setIn(in);
-       pr.getFile("File Name");
-       verify(properties,times(1)).clear();
-    }
-
-    @Test
-    public void getFile_whenInputStreamIsNotNull_thenLogClearChangesListIsInvoked() throws Exception {
-
-        pr.setIn(in);
-        pr.getFile("File Name");
-        verify(log,times(1)).clearChangesList();
+        pr.getFile(file);
+        verify(properties,times(1)).load(any(InputStream.class));
     }
 
 
-
-    @Test
-    public void getFile_whenInputStreamIsNotNull_andIOExIsNotCaught_thenPropsLoadIsInvoked() throws Exception{
-
-       pr.setIn(in);
-       pr.getFile("File Name");
-       verify(properties, atLeastOnce()).load(in);
-    }
-
+    ///NIE DZIALA
     @Test(expected = IOException.class)
-    public void getFile_whenInputStreamIsNotNull_andIOExIsCaught_thenIOExIsThrown() throws Exception{
+    public void getFile_whenIOExceptionIsCaught_LoadingPropertiesMethodIsInvoke() throws BusinessException, IOException {
 
-        pr.setIn(in);
-        doThrow(IOException.class).when(properties).load(in);
-        pr.getFile("File Name");
+        doThrow(IOException.class).when(properties).load(any(InputStream.class));
+        pr.getFile(file);
+        //verify(properties,times(1)).load(any(InputStream.class));
+    }
+    /////???????????
+
+
+    @Test
+    public void getFile_ChangesLogMethodInvocation_verifying() throws BusinessException {
+
+        pr.getFile(file);
+        verify(log,times(1)).loadFile(file.getOriginalFilename());
     }
 
     @Test
-    public void getFile_logLoadFileInvocationVerifying() throws Exception {
+    public void getFile_LoggerMethodInvocation_verifying() throws BusinessException {
 
-        pr.setIn(in);
-        String fileName = "File_name";
-        pr.getFile(fileName);
-
-        verify(log,atLeastOnce()).loadFile(fileName);
-    }
-
-    @Test
-    public void getFile_loggerInfoInvocationVerifying() throws Exception {
-
-        pr.setIn(in);
-        String fileName = "File_name";
-        pr.getFile(fileName);
-
-        verify(logger,atLeastOnce()).info("FILE LOADED: " +fileName);
+        pr.getFile(file);
+        verify(logger,times(1)).info("FILE LOADED: " + file.getOriginalFilename());
     }
 
     @Test

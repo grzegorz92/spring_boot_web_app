@@ -1,6 +1,7 @@
 package com.testprojects.firstapp.controllers;
 
 
+import com.testprojects.firstapp.exception.BusinessException;
 import com.testprojects.firstapp.model.Props;
 import com.testprojects.firstapp.services.PropertiesReader;
 import org.springframework.web.bind.annotation.*;
@@ -25,20 +26,22 @@ public class PropertiesRestController {
     //GET: GET FILE (and load file?)
 
     @PostMapping("/upload")
-    public String uploadFile(@RequestBody MultipartFile file){
+    public String uploadFile(@RequestBody MultipartFile file) throws BusinessException {
 
-        try {
-            pr.setIn(file.getInputStream());
-            pr.getFile(file.getOriginalFilename());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        //
+//        pr.setMultipartFile(file);
+//        //
+//        try {
+//            //pr.setIn(file);
+//            pr.getFile(file.getOriginalFilename());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
+        pr.getFile(file);
         loadedFileName = file.getOriginalFilename();
-
-
 
         return "File: "+ loadedFileName +" uploaded successfully";
     }

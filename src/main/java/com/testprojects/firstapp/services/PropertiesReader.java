@@ -8,9 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.*;
 import java.util.*;
-
 
 
 @Component
@@ -18,124 +19,88 @@ public class PropertiesReader {
 
     private Properties props = new Properties();
     private ChangesLog log = new ChangesLog();
-    private InputStream in;
     private Logger logger = LoggerFactory.getLogger(getClass().getName());
     private ObjectMapper jsonMapper = new ObjectMapper();
     private ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
 
 
     //LOAD AND SAVE PROPERTIES FILE
-    public void getFile(String fileName) throws Exception {
+    public void getFile(MultipartFile file) throws BusinessException {
 
-        if (this.in != null) {
-            props.clear();
-            log.clearChangesList();
-
-            try {
-                props.load(in);
-            } catch (IOException e) {
-               // e.printStackTrace();
-
-               logger.error("IOException is caught");
-               //throw new BusinessException("Couldn't load file");
-                throw e;
-            }
-        }
-        log.loadFile(fileName);
-        logger.info("FILE LOADED: "+fileName);
-    }
-
-    public void saveFileAsProperties(OutputStream os) throws BusinessException {
-
+        props.clear();
+        log.clearChangesList();
         try {
-            props.store(os,null);
+            props.load(file.getInputStream());
         } catch (IOException e) {
-            //e.printStackTrace();
-            //throw e;
-            throw new BusinessException("Couldn't save file");
+            throw new BusinessException("Cannot load file");
         }
+        log.loadFile(file.getOriginalFilename());
+        logger.info("FILE LOADED: " + file.getOriginalFilename());
     }
 
-    public void saveFileAsJson(OutputStream os) throws Exception {
+    public void saveFileAsProperties(OutputStream os) throws IOException {
 
-        try {
-            jsonMapper.writeValueAsString(props);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            throw e;
-        }
+        props.store(os, null);
+    }
+
+    public void saveFileAsJson(OutputStream os) throws IOException {
+
+        jsonMapper.writeValue(os, props);
     }
 
 
     public void saveFileAsYaml(OutputStream os) throws IOException {
 
-        try {
-            yamlMapper.writeValue(os, props);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw e;
-        }
+        yamlMapper.writeValue(os, props);
     }
 
     //Download audit_log file
-    public void downloadLog(OutputStream os) throws Exception {
+    public void downloadLog(OutputStream os) throws IOException {
 
-        FileInputStream in = null;
-        try {
-            in = new FileInputStream("logs/audit_log.log");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            throw e;
-        }
-
-        try {
-            FileCopyUtils.copy(in,os);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw e;
-        }
+        FileInputStream in = new FileInputStream("logs/audit_log.log");
+        FileCopyUtils.copy(in, os);
     }
 
     //LOADING PROPERTIES FROM FILE
-    public Map<String,String> loadProperties() {
+    public Map<String, String> loadProperties() {
 
-        Map<String,String> map = new HashMap<>();
+        Map<String, String> map = new HashMap<>();
         Enumeration<?> e = props.propertyNames();
 
         while (e.hasMoreElements()) {
             String key = (String) e.nextElement();
             map.put(key, props.getProperty(key));
         }
-       return map;
+        System.out.println(map);
+        return map;
     }
 
     //PROPERTIES EDITIONS
-    public void editProperties(String key, String oldValue, String newValue){
+    public void editProperties(String key, String oldValue, String newValue) {
 
         //If the same value for given key is added nothing happens
-        if (!oldValue.equals(newValue)){
+        if (!oldValue.equals(newValue)) {
             props.setProperty(key, newValue);
             log.editProperty(key, oldValue, newValue);
-            logger.info("EDITED: "+key+"###"+oldValue+"="+newValue);
+            logger.info("EDITED: " + key + "###" + oldValue + "=" + newValue);
         }
-
     }
 
-    public void addProperties(String key, String value){
+    public void addProperties(String key, String value) {
 
         //Editing in ADD field and generating log from this operation disabled
         if (props.get(key) == null) {
             props.setProperty(key, value);
             log.addProperty(key, value);
-            logger.info("ADDED: "+key+"###"+value);
+            logger.info("ADDED: " + key + "###" + value);
         }
     }
 
-    public void removeProperties(String key, String value){
+    public void removeProperties(String key, String value) {
 
         props.remove(key);
         log.removeProperty(key, value);
-        logger.info("REMOVED: "+key+"###"+value);
+        logger.info("REMOVED: " + key + "###" + value);
     }
 
     //OTHERS
@@ -143,9 +108,6 @@ public class PropertiesReader {
         return log.getChangesList();
     }
 
-    public void setIn(InputStream in) {
-        this.in = in;
-    }
 
     //setters for PropertiesReaderTest class to wire mocked Properties class with this one used here
     public void setProps(Properties props) {
@@ -167,5 +129,7 @@ public class PropertiesReader {
     public void setYamlMapper(ObjectMapper yamlMapper) {
         this.yamlMapper = yamlMapper;
     }
+
+
 }
 
