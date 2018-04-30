@@ -13,8 +13,10 @@ import java.util.Map;
 @RequestMapping("/rest/properties")
 public class PropertiesRestController {
 
-    PropertiesServiceImpl propertiesService;
-    String loadedFileName = "unknown.properties";
+   private PropertiesServiceImpl propertiesService;
+   private String loadedFileName = "unknown.properties";
+   public static final String BASE_URL = "/rest/properties";
+
 
     public PropertiesRestController(PropertiesServiceImpl propertiesService){//, Props props) {
         this.propertiesService = propertiesService;
@@ -91,5 +93,7 @@ public class PropertiesRestController {
         propertiesService.downloadLog(response.getOutputStream());
     }
 
-
+    public String getLoadedFileName() {
+        return loadedFileName;
+    }
 }

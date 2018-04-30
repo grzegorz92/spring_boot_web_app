@@ -2,33 +2,37 @@ package com.testprojects.firstapp.controllers;
 
 import com.testprojects.firstapp.exception.BusinessException;
 import com.testprojects.firstapp.services.PropertiesServiceImpl;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-@SuppressWarnings("Duplicates")
+
 @RunWith(MockitoJUnitRunner.class)
-public class PropertiesControllerTest {
+public class PropertiesRestControllerTest {
 
     @Mock
     PropertiesServiceImpl propertiesService;
@@ -37,29 +41,33 @@ public class PropertiesControllerTest {
 
     MockMultipartFile file;
 
-    PropertiesController propertiesController;
+    PropertiesRestController propertiesRestController;
 
-    @Before
-    public void setUp(){
+    @BeforeEach
+    void setUp() {
 
-        propertiesController = new PropertiesController(propertiesService);
-        mockMvc = MockMvcBuilders.standaloneSetup(propertiesController).setControllerAdvice(new ControllerExceptionHandler()).build(); //mocMvc configuration
+        propertiesRestController = new PropertiesRestController(propertiesService);
+        mockMvc = MockMvcBuilders.standaloneSetup(propertiesRestController).setControllerAdvice(new ControllerExceptionHandler()).build(); //mocMvc configuration
         file = new MockMultipartFile("file", "originalFileName","multipart/form-data", "hello".getBytes());
     }
+
+    //
 
     @Test
     public void testGetFileMethod_whenIOExceptionIsNotCaught() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders
-                .multipart("/uploading").file(file))
+                .multipart(PropertiesRestController.BASE_URL+"/upload").file(file)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isFound())
-                .andExpect(view().name("redirect:/properties"));
+                .andExpect(status().isOk());
 
         verify(propertiesService, times(1)).getFile(file);
 
-        assertEquals(file.getOriginalFilename(),propertiesController.getLoadedFileName());
+        assertEquals(file.getOriginalFilename(),propertiesRestController.getLoadedFileName());
     }
+
+    /*
 
     @Test
     public void testGetFileMethod_whenIOExceptionIsCaught() throws Exception {
@@ -236,5 +244,8 @@ public class PropertiesControllerTest {
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(view().name("ER"));
-    }
+
+
+    }*/
+
 }
