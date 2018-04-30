@@ -52,7 +52,7 @@
 
 
 
-        <tr th:each="e : ${props.entrySet()}">
+        <tr th:each="e : ${properties.entrySet()}">
             <td th:text="${e.getKey()}">Key</td>
             <td th:text="${e.getValue()}">Value</td>
             <td>

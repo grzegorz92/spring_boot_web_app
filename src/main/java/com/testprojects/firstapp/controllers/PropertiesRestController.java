@@ -2,23 +2,21 @@ package com.testprojects.firstapp.controllers;
 
 
 import com.testprojects.firstapp.exception.BusinessException;
-import com.testprojects.firstapp.model.Props;
-import com.testprojects.firstapp.services.PropertiesReader;
+import com.testprojects.firstapp.services.PropertiesServiceImpl;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/rest/properties")
 public class PropertiesRestController {
 
-    PropertiesReader pr;
+    PropertiesServiceImpl pr;
     //Props props;
     String loadedFileName = null;
 
-    public PropertiesRestController(PropertiesReader pr){//, Props props) {
+    public PropertiesRestController(PropertiesServiceImpl pr){//, Props props) {
         this.pr = pr;
         //this.props = props;
     }

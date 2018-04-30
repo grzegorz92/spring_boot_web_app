@@ -1,6 +1,7 @@
 package com.testprojects.firstapp.controllers;
 
-import com.testprojects.firstapp.services.PropertiesReader;
+import com.testprojects.firstapp.exception.BusinessException;
+import com.testprojects.firstapp.services.PropertiesServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,35 +9,31 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
+
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PropertiesControllerTest {
 
     @Mock
-    PropertiesReader pr;
+    PropertiesServiceImpl propertiesService;
 
     MockMvc mockMvc;
+
     MockMultipartFile file;
 
     PropertiesController propertiesController;
@@ -44,11 +41,80 @@ public class PropertiesControllerTest {
     @Before
     public void setUp(){
 
-        propertiesController = new PropertiesController(pr);
-        mockMvc = MockMvcBuilders.standaloneSetup(propertiesController).build(); //mocMvc configuration
+        propertiesController = new PropertiesController(propertiesService);
+        mockMvc = MockMvcBuilders.standaloneSetup(propertiesController).setControllerAdvice(new ControllerExceptionHandler()).build(); //mocMvc configuration
         file = new MockMultipartFile("file", "originalFileName","multipart/form-data", "hello".getBytes());
     }
-/*
+
+    @Test
+    public void testGetFileMethod_whenIOExceptionIsNotCaught() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .multipart("/uploading").file(file))
+                .andDo(print())
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/properties"));
+
+        verify(propertiesService, times(1)).getFile(file);
+
+        assertEquals(file.getOriginalFilename(),propertiesController.getLoadedFileName());
+    }
+
+    @Test
+    public void testGetFileMethod_whenIOExceptionIsCaught() throws Exception {
+
+        doThrow(BusinessException.class).when(propertiesService).getFile(file);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .multipart("/uploading").file(file))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(view().name("ER"));
+    }
+
+    @Test
+    public void readPropertiesMethod_test() throws Exception {
+
+        Map<String, String> properties = new HashMap<>();
+        properties.put("Name", "John");
+        properties.put("Last_Name", "Smith");
+
+        List<String> log = new ArrayList<>();
+        log.add("Log1");
+        log.add("Log2");
+
+        when(propertiesService.loadProperties()).thenReturn(properties);
+        when(propertiesService.getLog()).thenReturn(log);
+
+        mockMvc.perform(get("/properties/"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(model().attribute("props", properties))
+                .andExpect(model().attribute("changesLog", log))
+                .andExpect(view().name("properties"))
+                .andExpect(forwardedUrl("properties"));
+
+        verify(propertiesService, times(1)).loadProperties();
+        verify(propertiesService, times(1)).getLog();
+    }
+
+    @Test
+    public void deleteProperties_test() throws Exception {
+
+        String key = "Salary";
+        String value = "7500";
+
+        mockMvc.perform(
+                get("/delete")
+                        .param("key",key)
+                        .param("value",value))
+                .andDo(print())
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/properties"));
+
+        verify(propertiesService, times(1)).removeProperties(key,value);
+    }
+
     @Test
     public void editProperties_test() throws Exception {
 
@@ -65,7 +131,7 @@ public class PropertiesControllerTest {
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("/properties"));
 
-        verify(pr, atLeastOnce()).editProperties(key, oldValue, newValue);
+        verify(propertiesService, atLeastOnce()).editProperties(key, oldValue, newValue);
     }
 
     @Test
@@ -73,7 +139,6 @@ public class PropertiesControllerTest {
 
         String key = "Last_Name";
         String value = "Kowalsky";
-
 
         mockMvc.perform(
                 get("/add")
@@ -83,131 +148,92 @@ public class PropertiesControllerTest {
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/properties"));
 
-        verify(pr, atLeast(1)).addProperties(key,value);
-
+        verify(propertiesService, atLeast(1)).addProperties(key,value);
     }
 
     @Test
-    public void deleteProperties_test() throws Exception {
+    public void saveFileAsProperties_whenIOExceptionIsNotCaught_thenPropertiesAreBeingSavedIntoPropertiesFile() throws Exception {
 
-        String key = "Salary";
-        String value = "7500";
-
-        mockMvc.perform(
-                get("/delete")
-                    .param("key",key)
-                    .param("value",value))
+        mockMvc.perform(get("/save_properties"))
                 .andDo(print())
-                .andExpect(status().isFound())
-                .andExpect(redirectedUrl("/properties"));
+                .andExpect(status().isOk());
 
-        verify(pr, times(1)).removeProperties(key,value);
-    }
-
-
-    @Test
-    public void getFile_whenIOExIsCaught_thenSetInIsInvoked() throws Exception {
-
-        mockMvc.perform(MockMvcRequestBuilders
-                .multipart("/uploading").file(file))
-                .andDo(print())
-                .andExpect(status().isFound())
-                .andExpect(view().name("redirect:/properties"));
-
-       // verify(pr, atLeast(1)).setIn(any(ByteArrayInputStream.class));
+        verify(propertiesService,times(1)).saveFileAsProperties(any(OutputStream.class));
     }
 
     @Test
-    public void getFile_whenIOExIsCaught_thenIOExIsThrown() throws Exception {
+    public void saveFileAsProperties_whenIOExceptionIsCaught_thenBusinessExceptionIsThrown() throws Exception {
 
+        doThrow(BusinessException.class).when(propertiesService).saveFileAsProperties(any(OutputStream.class));
 
-        doThrow(new IOException()).when(pr).setIn(file);
-
-
-        mockMvc.perform(MockMvcRequestBuilders
-                        .multipart("/uploading").file(file))
+        mockMvc.perform(get("/save_properties"))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(view().name("ER"));
     }
 
     @Test
-    public void getFile_getOriginalName_test() throws Exception {
-
-        MockMultipartFile file = new MockMultipartFile("file", "originalFileName","multipart/form-data", "some_file".getBytes()); //name has to be the same as parameter name in controller!
-
-        mockMvc.perform(MockMvcRequestBuilders
-                .multipart("/uploading").file(file))
-                .andDo(print())
-                .andExpect(status().isFound())
-                .andExpect(view().name("redirect:/properties"));
-
-        verify(pr,atLeastOnce()).getFile(file.getOriginalFilename());
-    }
-
-    @Test
-    public void saveFileAsProperties_test() throws Exception {
-
-        mockMvc.perform(get("/save_properties"))
-                .andDo(print())
-                .andExpect(status().isOk());
-
-        verify(pr,times(1)).saveFileAsProperties(isNotNull());
-    }
-
-    @Test
-    public void saveFileAsJson_test() throws Exception {
+    public void saveFileAsJson_whenIOExceptionIsNotCaught_thenPropertiesAreBeingSavedIntoJsonFile() throws Exception {
 
         mockMvc.perform(get("/save_json"))
                 .andDo(print())
                 .andExpect(status().isOk());
 
-       verify(pr,times(1)).saveFileAsJson(isNotNull());
+        verify(propertiesService,times(1)).saveFileAsJson(any(OutputStream.class));
     }
 
     @Test
-    public void saveFileAsYaml_test() throws Exception {
+    public void saveFileAsJson_whenIOExceptionIsCaught_thenBusinessExceptionIsThrown() throws Exception {
+
+        doThrow(BusinessException.class).when(propertiesService).saveFileAsJson(any(OutputStream.class));
+
+        mockMvc.perform(get("/save_json"))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(view().name("ER"));
+    }
+
+
+
+    @Test
+    public void saveFileAsYaml_whenIOExceptionIsNotCaught_thenPropertiesAreBeingSavedIntoYamlFile() throws Exception {
 
         mockMvc.perform(get("/save_yaml"))
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        verify(pr,times(1)).saveFileAsYaml(isNotNull());
+        verify(propertiesService,times(1)).saveFileAsYaml(any(OutputStream.class));
     }
 
     @Test
-    public void downloadLog_test() throws Exception {
+    public void saveFileAsYaml_whenIOExceptionIsCaught_thenBusinessExceptionIsThrown() throws Exception {
 
-       mockMvc.perform(get("/download_log"))
+        doThrow(BusinessException.class).when(propertiesService).saveFileAsYaml(any(OutputStream.class));
+
+        mockMvc.perform(get("/save_yaml"))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(view().name("ER"));
+    }
+
+    @Test
+    public void downloadLog_whenIOExceptionIsNotCaught_thenLogIsBeingSavedIntoFile() throws Exception {
+
+        mockMvc.perform(get("/download_log"))
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        verify(pr, times(1)).downloadLog(isNotNull());
+        verify(propertiesService, times(1)).downloadLog(any(OutputStream.class));
     }
 
-
     @Test
-    public void readProperties() throws Exception {
+    public void downloadLog_whenIOExceptionIsCaught_thenBusinessExceptionIsThrown() throws Exception {
 
-        Map<String, String> properties = new HashMap<>();
-        properties.put("Name","John");
-        properties.put("Last_Name", "Smith");
+        doThrow(BusinessException.class).when(propertiesService).downloadLog(any(OutputStream.class));
 
-        List<String> log = new ArrayList<>();
-        log.add("Log1");
-        log.add("Log2");
-
-        when(pr.loadProperties()).thenReturn(properties);
-        when(pr.getLog()).thenReturn(log);
-
-        mockMvc.perform(get("/properties/"))
-                .andExpect(status().isOk())
+        mockMvc.perform(get("/download_log"))
                 .andDo(print())
-                .andExpect(model().attribute("props",properties))
-                .andExpect(model().attribute("changesLog",log))
-                .andExpect(view().name("properties"))
-                .andExpect(forwardedUrl("properties"));
-
-        verify(pr,atLeastOnce()).loadProperties();
-    }*/
+                .andExpect(status().isNotFound())
+                .andExpect(view().name("ER"));
+    }
 }

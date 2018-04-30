@@ -1,12 +1,12 @@
 package com.testprojects.firstapp.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.testprojects.firstapp.exception.BusinessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,10 +14,10 @@ import java.io.*;
 import java.util.*;
 
 
-@Component
-public class PropertiesReader {
+@Service
+public class PropertiesServiceImpl {
 
-    private Properties props = new Properties();
+    private Properties properties = new Properties();
     private ChangesLog log = new ChangesLog();
     private Logger logger = LoggerFactory.getLogger(getClass().getName());
     private ObjectMapper jsonMapper = new ObjectMapper();
@@ -27,52 +27,72 @@ public class PropertiesReader {
     //LOAD AND SAVE PROPERTIES FILE
     public void getFile(MultipartFile file) throws BusinessException {
 
-        props.clear();
-        log.clearChangesList();
+        properties.clear();
+        log.clearChangesLog();
         try {
-            props.load(file.getInputStream());
+            properties.load(file.getInputStream());
         } catch (IOException e) {
             throw new BusinessException("Cannot load file");
         }
-        log.loadFile(file.getOriginalFilename());
+        log.loadFileLog(file.getOriginalFilename());
         logger.info("FILE LOADED: " + file.getOriginalFilename());
     }
 
-    public void saveFileAsProperties(OutputStream os) throws IOException {
+    public void saveFileAsProperties(OutputStream outputStream) throws BusinessException {
 
-        props.store(os, null);
+        try {
+            properties.store(outputStream, null);
+        } catch (IOException e) {
+            throw new BusinessException("Cannot load file");
+        }
     }
 
-    public void saveFileAsJson(OutputStream os) throws IOException {
+    public void saveFileAsJson(OutputStream outputStream) throws BusinessException {
 
-        jsonMapper.writeValue(os, props);
+        try {
+            jsonMapper.writeValue(outputStream, properties);
+        } catch (IOException e) {
+            throw new BusinessException("Cannot load file");
+        }
     }
 
 
-    public void saveFileAsYaml(OutputStream os) throws IOException {
+    public void saveFileAsYaml(OutputStream outputStream) throws BusinessException {
 
-        yamlMapper.writeValue(os, props);
+        try {
+            yamlMapper.writeValue(outputStream, properties);
+        } catch (IOException e) {
+            throw new BusinessException("Cannot load file");
+        }
     }
 
     //Download audit_log file
-    public void downloadLog(OutputStream os) throws IOException {
+    public void downloadLog(OutputStream outputStream) throws BusinessException {
 
-        FileInputStream in = new FileInputStream("logs/audit_log.log");
-        FileCopyUtils.copy(in, os);
+        FileInputStream fileInputStream = null;
+        try {
+            fileInputStream = new FileInputStream("logs/audit_log.log");
+        } catch (FileNotFoundException e) {
+            throw new BusinessException("File Not Found!");
+        }
+        try {
+            FileCopyUtils.copy(fileInputStream, outputStream);
+        } catch (IOException e) {
+            throw new BusinessException("Cannot load file");
+        }
     }
 
     //LOADING PROPERTIES FROM FILE
     public Map<String, String> loadProperties() {
 
-        Map<String, String> map = new HashMap<>();
-        Enumeration<?> e = props.propertyNames();
+        Map<String, String> loadedProperties = new HashMap<>();
+        Enumeration<?> e = properties.propertyNames();
 
         while (e.hasMoreElements()) {
             String key = (String) e.nextElement();
-            map.put(key, props.getProperty(key));
+            loadedProperties.put(key, properties.getProperty(key));
         }
-        System.out.println(map);
-        return map;
+        return loadedProperties;
     }
 
     //PROPERTIES EDITIONS
@@ -80,8 +100,8 @@ public class PropertiesReader {
 
         //If the same value for given key is added nothing happens
         if (!oldValue.equals(newValue)) {
-            props.setProperty(key, newValue);
-            log.editProperty(key, oldValue, newValue);
+            properties.setProperty(key, newValue);
+            log.editedPropertyLog(key, oldValue, newValue);
             logger.info("EDITED: " + key + "###" + oldValue + "=" + newValue);
         }
     }
@@ -89,29 +109,28 @@ public class PropertiesReader {
     public void addProperties(String key, String value) {
 
         //Editing in ADD field and generating log from this operation disabled
-        if (props.get(key) == null) {
-            props.setProperty(key, value);
-            log.addProperty(key, value);
+        if (properties.get(key) == null) {
+            properties.setProperty(key, value);
+            log.addPropertyLog(key, value);
             logger.info("ADDED: " + key + "###" + value);
         }
     }
 
     public void removeProperties(String key, String value) {
 
-        props.remove(key);
-        log.removeProperty(key, value);
+        properties.remove(key);
+        log.removePropertyLog(key, value);
         logger.info("REMOVED: " + key + "###" + value);
     }
 
     //OTHERS
     public List<String> getLog() {
-        return log.getChangesList();
+        return log.getChangesLog();
     }
 
-
     //setters for PropertiesReaderTest class to wire mocked Properties class with this one used here
-    public void setProps(Properties props) {
-        this.props = props;
+    public void setProperties(Properties properties) {
+        this.properties = properties;
     }
 
     public void setLog(ChangesLog log) {

@@ -10,7 +10,7 @@ import java.util.List;
 @Component
 public class ChangesLog {
 
-    private List<String> changesList = new ArrayList<>();
+    private List<String> changesLog = new ArrayList<>();
 
 
     String getCurrentDate() {
@@ -20,31 +20,31 @@ public class ChangesLog {
         return strDate;
     }
 
-    public void loadFile(String fileName){
+    public void loadFileLog(String fileName){
 
-        changesList.add("CHANGES LOG for: "+getCurrentDate());
-        changesList.add("LOADED FILE: "+fileName);
-        changesList.add("EDITIONS:");
+        changesLog.add("CHANGES LOG for: "+getCurrentDate());
+        changesLog.add("LOADED FILE: "+fileName);
+        changesLog.add("EDITIONS:");
     }
 
-    public void editProperty(String key, String oldValue, String newValue){
-        changesList.add("EDITED: "+key+"###"+oldValue+" = "+newValue);
+    public void editedPropertyLog(String key, String oldValue, String newValue){
+        changesLog.add("EDITED: "+key+"###"+oldValue+" = "+newValue);
     }
 
-    public void addProperty(String key, String value){
-        changesList.add("ADDED: "+key+"###"+value);
+    public void addPropertyLog(String key, String value){
+        changesLog.add("ADDED: "+key+"###"+value);
     }
 
-    public void removeProperty(String key, String value){
-        changesList.add("REMOVED: "+key+"###"+value);
+    public void removePropertyLog(String key, String value){
+        changesLog.add("REMOVED: "+key+"###"+value);
     }
 
-    public List<String> getChangesList() {
-        return changesList;
+    public List<String> getChangesLog() {
+        return changesLog;
     }
 
-    public void clearChangesList(){
+    public void clearChangesLog(){
 
-        changesList.clear();
+        changesLog.clear();
     }
 }
