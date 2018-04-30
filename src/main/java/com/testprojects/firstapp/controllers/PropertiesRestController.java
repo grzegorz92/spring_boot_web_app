@@ -6,39 +6,25 @@ import com.testprojects.firstapp.services.PropertiesServiceImpl;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/rest/properties")
 public class PropertiesRestController {
 
-    PropertiesServiceImpl pr;
-    //Props props;
-    String loadedFileName = null;
+    PropertiesServiceImpl propertiesService;
+    String loadedFileName = "unknown.properties";
 
-    public PropertiesRestController(PropertiesServiceImpl pr){//, Props props) {
-        this.pr = pr;
-        //this.props = props;
+    public PropertiesRestController(PropertiesServiceImpl propertiesService){//, Props props) {
+        this.propertiesService = propertiesService;
     }
 
-    //GET: GET FILE (and load file?)
 
     @PostMapping("/upload")
     public String uploadFile(@RequestBody MultipartFile file) throws BusinessException {
 
-//        //
-//        pr.setMultipartFile(file);
-//        //
-//        try {
-//            //pr.setIn(file);
-//            pr.getFile(file.getOriginalFilename());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
-        pr.getFile(file);
+        propertiesService.getFile(file);
         loadedFileName = file.getOriginalFilename();
 
         return "File: "+ loadedFileName +" uploaded successfully";
@@ -47,47 +33,63 @@ public class PropertiesRestController {
     @GetMapping
     public Map<String, String> getProperties(){
 
-        return pr.loadProperties();
+        return propertiesService.loadProperties();
     }
 
     @PostMapping
     public Map<String, String> addProperties(@RequestParam String key, @RequestParam String value){
 
-        pr.addProperties(key, value);
+        propertiesService.addProperties(key, value);
 
-        return pr.loadProperties();
+        return propertiesService.loadProperties();
     }
 
     @PutMapping
     public Map<String, String> editProperties(@RequestParam String key, @RequestParam String oldValue, @RequestParam String newValue){
 
-        pr.editProperties(key, oldValue, newValue);
+        propertiesService.editProperties(key, oldValue, newValue);
 
-        return pr.loadProperties();
+        return propertiesService.loadProperties();
     }
 
     @DeleteMapping
     public Map<String, String> deleteProperties(@RequestParam String key, @RequestParam String value){
 
-        pr.removeProperties(key, value);
+        propertiesService.removeProperties(key, value);
 
-        return pr.loadProperties();
+        return propertiesService.loadProperties();
     }
 
+    @GetMapping("/save_properties")
+    public void saveFileAsProperties(HttpServletResponse response) throws Exception {
+
+        response.setHeader("Content-disposition", "attachment; filename="+loadedFileName);
+
+        propertiesService.saveFileAsProperties(response.getOutputStream());
+        response.flushBuffer();
+    }
+
+    @GetMapping("/save_yaml")
+    public void saveFileAsYaml(HttpServletResponse response) throws Exception {
+
+        response.setHeader("Content-disposition", "attachment; filename=new_file.yaml");
+        propertiesService.saveFileAsYaml(response.getOutputStream());
+    }
+
+    @GetMapping("/save_json")
+    public void saveFileAsJson(HttpServletResponse response) throws Exception {
 
 
+        response.setHeader("Content-disposition", "attachment; filename=new_file.json");
+        propertiesService.saveFileAsJson(response.getOutputStream());
+    }
 
+    @GetMapping("/download_log")
+    public void downloadLog(HttpServletResponse response) throws Exception{
 
-    //POST: ADD NEW PROPERTY
-
-    //PUT: EDIT PROPERTY
-
-    //DELETE: REMOVE PROPERTY
-
-    //GET: SAVE IN .property, .json, .yaml
-
-    //GET: SAVE CHANGES LOG
-
+        response.setHeader("Content-disposition", "attachment; filename=audit_log.log");
+        propertiesService.downloadLog(response.getOutputStream());
+    }
 
 
 }
