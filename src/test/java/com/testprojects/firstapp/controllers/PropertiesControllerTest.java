@@ -192,8 +192,6 @@ public class PropertiesControllerTest {
                 .andExpect(view().name("ER"));
     }
 
-
-
     @Test
     public void saveFileAsYaml_whenIOExceptionIsNotCaught_thenPropertiesAreBeingSavedIntoYamlFile() throws Exception {
 

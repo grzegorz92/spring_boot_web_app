@@ -23,7 +23,6 @@ public class PropertiesServiceImpl {
     private ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
 
 
-    //LOAD AND SAVE PROPERTIES FILE
     public void getFile(MultipartFile file) throws BusinessException {
 
         properties.clear();
@@ -65,10 +64,9 @@ public class PropertiesServiceImpl {
         }
     }
 
-    //Download audit_log file
     public void downloadLog(OutputStream outputStream) throws BusinessException {
 
-        FileInputStream fileInputStream = null;
+        FileInputStream fileInputStream;// = null;
         try {
             fileInputStream = new FileInputStream("logs/audit_log.log");
         } catch (FileNotFoundException e) {
@@ -81,7 +79,6 @@ public class PropertiesServiceImpl {
         }
     }
 
-    //LOADING PROPERTIES FROM FILE
     public Map<String, String> loadProperties() {
 
         Map<String, String> loadedProperties = new HashMap<>();
@@ -91,10 +88,11 @@ public class PropertiesServiceImpl {
             String key = (String) e.nextElement();
             loadedProperties.put(key, properties.getProperty(key));
         }
+
+        System.out.println(loadedProperties);
         return loadedProperties;
     }
 
-    //PROPERTIES EDITIONS
     public void editProperties(String key, String oldValue, String newValue) {
 
         //If the same value for given key is added nothing happens
@@ -122,7 +120,6 @@ public class PropertiesServiceImpl {
         logger.info("REMOVED: " + key + "###" + value);
     }
 
-    //OTHERS
     public List<String> getLog() {
         return log.getChangesLog();
     }

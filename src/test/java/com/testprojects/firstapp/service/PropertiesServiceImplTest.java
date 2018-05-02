@@ -11,7 +11,9 @@ import java.io.*;
 import java.util.*;
 import org.slf4j.Logger;
 import org.springframework.mock.web.MockMultipartFile;
+import org.junit.Assert.*;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.verify;
 
@@ -132,6 +134,23 @@ public class PropertiesServiceImplTest {
 
         doThrow(IOException.class).when(mapper).writeValue(outputStream,properties);
         propertiesService.saveFileAsYaml(outputStream);
+    }
+
+    @Test
+    public void loadProperties_test(){
+
+        Map<String, String> temporaryProperties = new HashMap<>();
+        temporaryProperties.put("Name", "John");
+        temporaryProperties.put("Last_Name","Smith");
+
+
+
+        // HOW TO add HashMap to Enumerate??
+        //when(properties.propertyNames()).thenReturn(temporaryProperties.keySet());
+
+        propertiesService.loadProperties();
+
+        assertEquals(temporaryProperties, propertiesService.loadProperties());
     }
 
 
