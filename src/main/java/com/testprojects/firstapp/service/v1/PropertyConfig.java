@@ -1,4 +1,4 @@
-package com.testprojects.firstapp.services.v1;
+package com.testprojects.firstapp.service.v1;
 
 
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -1,7 +1,7 @@
 package com.testprojects.firstapp.controllers;
 
 import com.testprojects.firstapp.exception.BusinessException;
-import com.testprojects.firstapp.services.PropertiesServiceImpl;
+import com.testprojects.firstapp.service.PropertiesServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;

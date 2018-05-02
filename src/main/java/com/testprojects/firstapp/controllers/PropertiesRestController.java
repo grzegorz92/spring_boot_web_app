@@ -2,7 +2,7 @@ package com.testprojects.firstapp.controllers;
 
 
 import com.testprojects.firstapp.exception.BusinessException;
-import com.testprojects.firstapp.services.PropertiesServiceImpl;
+import com.testprojects.firstapp.service.PropertiesServiceImpl;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 

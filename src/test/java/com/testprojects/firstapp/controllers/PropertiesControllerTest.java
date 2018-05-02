@@ -1,7 +1,7 @@
 package com.testprojects.firstapp.controllers;
 
 import com.testprojects.firstapp.exception.BusinessException;
-import com.testprojects.firstapp.services.PropertiesServiceImpl;
+import com.testprojects.firstapp.service.PropertiesServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +13,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +25,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SuppressWarnings("Duplicates")
 @RunWith(MockitoJUnitRunner.class)
 public class PropertiesControllerTest {
 

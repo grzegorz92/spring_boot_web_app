@@ -1,4 +1,4 @@
-package com.testprojects.firstapp.services;
+package com.testprojects.firstapp.service;
 
 import org.springframework.web.multipart.MultipartFile;
 

@@ -1,4 +1,4 @@
-package com.testprojects.firstapp.services;
+package com.testprojects.firstapp.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.testprojects.firstapp.exception.BusinessException;
@@ -82,7 +82,7 @@ public class PropertiesServiceImplTest {
     public void getFile_ChangesLogMethodInvocation_verifying() throws BusinessException {
 
         propertiesService.getFile(file);
-        verify(log,times(1)).loadFileLog(file.getOriginalFilename());
+        verify(log,times(1)).logFileLoading(file.getOriginalFilename());
     }
 
     @Test
@@ -165,7 +165,7 @@ public class PropertiesServiceImplTest {
         String newValue = "Richard";
 
         propertiesService.editProperties(key,oldValue,newValue);
-        verify(log,never()).editedPropertyLog(key,oldValue,newValue);
+        verify(log,never()).logPropertyEdition(key,oldValue,newValue);
 
     }
 
@@ -177,7 +177,7 @@ public class PropertiesServiceImplTest {
         String newValue = "John";
 
         propertiesService.editProperties(key,oldValue,newValue);
-        verify(log,times(1)).editedPropertyLog(key,oldValue,newValue);
+        verify(log,times(1)).logPropertyEdition(key,oldValue,newValue);
     }
 
     @Test
@@ -210,7 +210,7 @@ public class PropertiesServiceImplTest {
         String value = "Richard";
 
         propertiesService.addProperties(key,value);
-        verify(log,times(1)).addPropertyLog(key,value);
+        verify(log,times(1)).logPropertyAddition(key,value);
 
     }
 
@@ -225,7 +225,7 @@ public class PropertiesServiceImplTest {
         propertiesService.setProperties(props);
 
         propertiesService.addProperties(key,value);
-        verify(log,never()).addPropertyLog(key,value);
+        verify(log,never()).logPropertyAddition(key,value);
     }
 
     @Test
@@ -295,7 +295,7 @@ public class PropertiesServiceImplTest {
 
         propertiesService.removeProperties(key,value);
 
-        verify(log,times(1)).removePropertyLog(key,value);
+        verify(log,times(1)).logPropertyRemoving(key,value);
     }
 
     @Test

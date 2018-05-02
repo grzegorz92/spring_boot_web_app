@@ -1,4 +1,4 @@
-package com.testprojects.firstapp.services;
+package com.testprojects.firstapp.service;
 
 import org.springframework.stereotype.Component;
 
@@ -20,22 +20,22 @@ public class ChangesLog {
         return strDate;
     }
 
-    public void loadFileLog(String fileName){
+    public void logFileLoading(String fileName){
 
         changesLog.add("CHANGES LOG for: "+getCurrentDate());
         changesLog.add("LOADED FILE: "+fileName);
         changesLog.add("EDITIONS:");
     }
 
-    public void editedPropertyLog(String key, String oldValue, String newValue){
+    public void logPropertyEdition(String key, String oldValue, String newValue){
         changesLog.add("EDITED: "+key+"###"+oldValue+" = "+newValue);
     }
 
-    public void addPropertyLog(String key, String value){
+    public void logPropertyAddition(String key, String value){
         changesLog.add("ADDED: "+key+"###"+value);
     }
 
-    public void removePropertyLog(String key, String value){
+    public void logPropertyRemoving(String key, String value){
         changesLog.add("REMOVED: "+key+"###"+value);
     }
 

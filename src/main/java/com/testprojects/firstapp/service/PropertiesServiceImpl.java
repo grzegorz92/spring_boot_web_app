@@ -1,11 +1,10 @@
-package com.testprojects.firstapp.services;
+package com.testprojects.firstapp.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.testprojects.firstapp.exception.BusinessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,7 +33,7 @@ public class PropertiesServiceImpl {
         } catch (IOException e) {
             throw new BusinessException("Cannot load file");
         }
-        log.loadFileLog(file.getOriginalFilename());
+        log.logFileLoading(file.getOriginalFilename());
         logger.info("FILE LOADED: " + file.getOriginalFilename());
     }
 
@@ -101,7 +100,7 @@ public class PropertiesServiceImpl {
         //If the same value for given key is added nothing happens
         if (!oldValue.equals(newValue)) {
             properties.setProperty(key, newValue);
-            log.editedPropertyLog(key, oldValue, newValue);
+            log.logPropertyEdition(key, oldValue, newValue);
             logger.info("EDITED: " + key + "###" + oldValue + "=" + newValue);
         }
     }
@@ -111,7 +110,7 @@ public class PropertiesServiceImpl {
         //Editing in ADD field and generating log from this operation disabled
         if (properties.get(key) == null) {
             properties.setProperty(key, value);
-            log.addPropertyLog(key, value);
+            log.logPropertyAddition(key, value);
             logger.info("ADDED: " + key + "###" + value);
         }
     }
@@ -119,7 +118,7 @@ public class PropertiesServiceImpl {
     public void removeProperties(String key, String value) {
 
         properties.remove(key);
-        log.removePropertyLog(key, value);
+        log.logPropertyRemoving(key, value);
         logger.info("REMOVED: " + key + "###" + value);
     }
 
