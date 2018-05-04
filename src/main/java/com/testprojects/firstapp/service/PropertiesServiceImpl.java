@@ -5,8 +5,10 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.testprojects.firstapp.exception.BusinessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -23,17 +25,23 @@ public class PropertiesServiceImpl {
     private ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
 
 
+
+
     public void getFile(MultipartFile file) throws BusinessException {
 
-        properties.clear();
-        log.clearChangesLog();
-        try {
-            properties.load(file.getInputStream());
-        } catch (IOException e) {
-            throw new BusinessException("Cannot load file");
+        if (file != null) {
+            properties.clear();
+            log.clearChangesLog();
+            try {
+                properties.load(file.getInputStream());
+            } catch (IOException e) {
+                throw new BusinessException("Cannot load file");
+            }
+            log.logFileLoading(file.getOriginalFilename());
+            logger.info("FILE LOADED: " + file.getOriginalFilename());
+        } else {
+            throw new BusinessException("File is null",HttpStatus.BAD_REQUEST);
         }
-        log.logFileLoading(file.getOriginalFilename());
-        logger.info("FILE LOADED: " + file.getOriginalFilename());
     }
 
     public void saveFileAsProperties(OutputStream outputStream) throws BusinessException {
@@ -79,18 +87,9 @@ public class PropertiesServiceImpl {
         }
     }
 
-    public Map<String, String> loadProperties() {
+    public Map<String, String> getProperties() {
 
-        Map<String, String> loadedProperties = new HashMap<>();
-        Enumeration<?> e = properties.propertyNames();
-
-        while (e.hasMoreElements()) {
-            String key = (String) e.nextElement();
-            loadedProperties.put(key, properties.getProperty(key));
-        }
-
-        System.out.println(loadedProperties);
-        return loadedProperties;
+        return (Map) properties;
     }
 
     public void editProperties(String key, String oldValue, String newValue) {
@@ -106,6 +105,7 @@ public class PropertiesServiceImpl {
     public void addProperties(String key, String value) {
 
         //Editing in ADD field and generating log from this operation disabled
+
         if (properties.get(key) == null) {
             properties.setProperty(key, value);
             log.logPropertyAddition(key, value);

@@ -13,12 +13,12 @@ import java.util.Map;
 @RequestMapping("/rest/properties")
 public class PropertiesRestController {
 
-   private PropertiesServiceImpl propertiesService;
-   private String loadedFileName = "unknown.properties";
-   public static final String BASE_URL = "/rest/properties";
+    private PropertiesServiceImpl propertiesService;
+    private String loadedFileName = "unknown.properties";
+    public static final String BASE_URL = "/rest/properties";
 
 
-    public PropertiesRestController(PropertiesServiceImpl propertiesService){//, Props props) {
+    public PropertiesRestController(PropertiesServiceImpl propertiesService) {//, Props props) {
         this.propertiesService = propertiesService;
     }
 
@@ -29,43 +29,43 @@ public class PropertiesRestController {
         propertiesService.getFile(file);
         loadedFileName = file.getOriginalFilename();
 
-        return "File: "+ loadedFileName +" uploaded successfully";
+        return "File: " + loadedFileName + " uploaded successfully";
     }
 
     @GetMapping
-    public Map<String, String> getProperties(){
+    public Map<String, String> getProperties() {
 
-        return propertiesService.loadProperties();
+        return propertiesService.getProperties();
     }
 
     @PostMapping
-    public Map<String, String> addProperties(@RequestParam String key, @RequestParam String value){
+    public Map<String, String> addProperties(@RequestParam String key, @RequestParam String value) throws BusinessException {
 
         propertiesService.addProperties(key, value);
 
-        return propertiesService.loadProperties();
+        return propertiesService.getProperties();
     }
 
     @PutMapping
-    public Map<String, String> editProperties(@RequestParam String key, @RequestParam String oldValue, @RequestParam String newValue){
+    public Map<String, String> editProperties(@RequestParam String key, @RequestParam String oldValue, @RequestParam String newValue) {
 
         propertiesService.editProperties(key, oldValue, newValue);
 
-        return propertiesService.loadProperties();
+        return propertiesService.getProperties();
     }
 
     @DeleteMapping
-    public Map<String, String> deleteProperties(@RequestParam String key, @RequestParam String value){
+    public Map<String, String> deleteProperties(@RequestParam String key, @RequestParam String value) {
 
         propertiesService.removeProperties(key, value);
 
-        return propertiesService.loadProperties();
+        return propertiesService.getProperties();
     }
 
     @GetMapping("/save_properties")
     public void saveFileAsProperties(HttpServletResponse response) throws Exception {
 
-        response.setHeader("Content-disposition", "attachment; filename="+loadedFileName);
+        response.setHeader("Content-disposition", "attachment; filename=" + loadedFileName);
 
         propertiesService.saveFileAsProperties(response.getOutputStream());
         response.flushBuffer();
@@ -87,7 +87,7 @@ public class PropertiesRestController {
     }
 
     @GetMapping("/download_log")
-    public void downloadLog(HttpServletResponse response) throws Exception{
+    public void downloadLog(HttpServletResponse response) throws Exception {
 
         response.setHeader("Content-disposition", "attachment; filename=audit_log.log");
         propertiesService.downloadLog(response.getOutputStream());

@@ -35,7 +35,7 @@ public class PropertiesController {
     @RequestMapping("/properties")
     public String readProperties(Model model){
 
-       model.addAttribute("properties", propertiesService.loadProperties());
+       model.addAttribute("properties", propertiesService.getProperties());
        model.addAttribute("changesLog", propertiesService.getLog());
 
         return "properties";
@@ -56,7 +56,7 @@ public class PropertiesController {
     }
 
     @RequestMapping("/add")
-    public String addProperties(@RequestParam("key") String key, @RequestParam("value") String value){
+    public String addProperties(@RequestParam("key") String key, @RequestParam("value") String value) throws BusinessException {
 
         propertiesService.addProperties(key, value);
         return "redirect:/properties";

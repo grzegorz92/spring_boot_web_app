@@ -82,7 +82,7 @@ public class PropertiesControllerTest {
         log.add("Log1");
         log.add("Log2");
 
-        when(propertiesService.loadProperties()).thenReturn(properties);
+        when(propertiesService.getProperties()).thenReturn(properties);
         when(propertiesService.getLog()).thenReturn(log);
 
         mockMvc.perform(get("/properties/"))
@@ -93,7 +93,7 @@ public class PropertiesControllerTest {
                 .andExpect(view().name("properties"))
                 .andExpect(forwardedUrl("properties"));
 
-        verify(propertiesService, times(1)).loadProperties();
+        verify(propertiesService, times(1)).getProperties();
         verify(propertiesService, times(1)).getLog();
     }
 

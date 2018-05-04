@@ -11,7 +11,6 @@ import java.io.*;
 import java.util.*;
 import org.slf4j.Logger;
 import org.springframework.mock.web.MockMultipartFile;
-import org.junit.Assert.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -137,24 +136,6 @@ public class PropertiesServiceImplTest {
     }
 
     @Test
-    public void loadProperties_test(){
-
-        Map<String, String> temporaryProperties = new HashMap<>();
-        temporaryProperties.put("Name", "John");
-        temporaryProperties.put("Last_Name","Smith");
-
-
-
-        // HOW TO add HashMap to Enumerate??
-        //when(properties.propertyNames()).thenReturn(temporaryProperties.keySet());
-
-        propertiesService.loadProperties();
-
-        assertEquals(temporaryProperties, propertiesService.loadProperties());
-    }
-
-
-    @Test
     public void editProperties_whenOldValueIsEqualsNewValue_thenSetPropertyMethodIsNeverInvoked(){
 
         String key = "Name";
@@ -223,7 +204,7 @@ public class PropertiesServiceImplTest {
     }
 
     @Test
-    public void addProperties_whenGivenKeyIsNew_thenAddPropertyLogIsInvoked(){ //whenGivenKeyIsNew - props.get(key)=null
+    public void addProperties_whenGivenKeyIsNew_thenAddPropertyLogIsInvoked() throws BusinessException { //whenGivenKeyIsNew - props.get(key)=null
 
         String key = "Name";
         String value = "Richard";
@@ -234,7 +215,7 @@ public class PropertiesServiceImplTest {
     }
 
     @Test
-    public void addProperties_whenGivenKeyAlreadyExistsInProperties_thenAddPropertyLogMethodIsNeverInvoked(){ //whenGivenKeyIsNotNew - props.get(key)!=null
+    public void addProperties_whenGivenKeyAlreadyExistsInProperties_thenAddPropertyLogMethodIsNeverInvoked() throws BusinessException { //whenGivenKeyIsNotNew - props.get(key)!=null
 
         String key = "Name";
         String value = "Richard";
@@ -248,7 +229,7 @@ public class PropertiesServiceImplTest {
     }
 
     @Test
-    public void addProperties_whenGivenKeyIsNew_thenLoggerInfoMethodIsInvoked(){
+    public void addProperties_whenGivenKeyIsNew_thenLoggerInfoMethodIsInvoked() throws BusinessException {
 
         String key = "Name";
         String value = "Richard";
@@ -259,7 +240,7 @@ public class PropertiesServiceImplTest {
     }
 
     @Test
-    public void addProperties_whenGivenKeyAlreadyExistsInProperties_thenLoggerInfoMethodIsNeverInvoked(){
+    public void addProperties_whenGivenKeyAlreadyExistsInProperties_thenLoggerInfoMethodIsNeverInvoked() throws BusinessException {
 
         String key = "Name";
         String value = "Richard";
@@ -273,7 +254,7 @@ public class PropertiesServiceImplTest {
     }
 
     @Test
-    public void addProperties_whenGivenKeyIsNew_thenSetPropertyMethodIsInvoked(){
+    public void addProperties_whenGivenKeyIsNew_thenSetPropertyMethodIsInvoked() throws BusinessException {
 
         String key = "Name";
         String value = "Richard";
@@ -283,7 +264,7 @@ public class PropertiesServiceImplTest {
     }
 
     @Test
-    public void addProperties_whenGivenKeyAlreadyExistsInProperties_thenSetPropertyMethodIsNeverInvoked(){
+    public void addProperties_whenGivenKeyAlreadyExistsInProperties_thenSetPropertyMethodIsNeverInvoked() throws BusinessException {
 
         String key = "Name";
         String value = "Richard";

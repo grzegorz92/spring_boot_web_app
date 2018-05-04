@@ -16,7 +16,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -91,7 +90,7 @@ public class PropertiesRestControllerTest {
         properties.put("Name", "John");
         properties.put("Last_Name","Smith");
 
-        when(propertiesService.loadProperties()).thenReturn(properties);
+        when(propertiesService.getProperties()).thenReturn(properties);
 
         mockMvc.perform(get(PropertiesRestController.BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -112,7 +111,7 @@ public class PropertiesRestControllerTest {
         properties.put("Last_Name","Smith");
         properties.put(key,value);
 
-        when(propertiesService.loadProperties()).thenReturn(properties);
+        when(propertiesService.getProperties()).thenReturn(properties);
 
         mockMvc.perform(post(PropertiesRestController.BASE_URL)
                 .param("key",key)
@@ -138,7 +137,7 @@ public class PropertiesRestControllerTest {
         properties.put(key, newValue);
         properties.put("Last_Name","Smith");
 
-        when(propertiesService.loadProperties()).thenReturn(properties);
+        when(propertiesService.getProperties()).thenReturn(properties);
 
         mockMvc.perform(put(PropertiesRestController.BASE_URL)
                 .param("key",key)
@@ -162,7 +161,7 @@ public class PropertiesRestControllerTest {
         Map<String, String> properties = new HashMap<>();
         properties.put("Last_Name","Smith");
 
-        when(propertiesService.loadProperties()).thenReturn(properties);
+        when(propertiesService.getProperties()).thenReturn(properties);
 
         mockMvc.perform(delete(PropertiesRestController.BASE_URL)
                 .param("key",key)
