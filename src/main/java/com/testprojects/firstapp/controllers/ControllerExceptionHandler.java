@@ -15,8 +15,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 
 @ControllerAdvice
-@EnableWebMvc
-//with spring.mvc.throw-exception-if-no-handler-found=true in properties enables throwing personalized exception handler for 404
+@EnableWebMvc//with spring.mvc.throw-exception-if-no-handler-found=true in properties enables throwing personalized exception handler for 404
 public class ControllerExceptionHandler {
 
 
@@ -49,7 +48,6 @@ public class ControllerExceptionHandler {
 
         return new ResponseEntity(error, error.getStatus());
     }
-
 
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity handleNotFoundException(NoHandlerFoundException e) {

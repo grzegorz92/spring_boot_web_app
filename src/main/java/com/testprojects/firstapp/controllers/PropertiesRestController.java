@@ -80,7 +80,6 @@ public class PropertiesRestController {
     @GetMapping("/save_json")
     public void saveFileAsJson(HttpServletResponse response) throws Exception {
 
-
         response.setHeader("Content-disposition", "attachment; filename=new_file.json");
         propertiesService.saveFileAsJson(response.getOutputStream());
     }
