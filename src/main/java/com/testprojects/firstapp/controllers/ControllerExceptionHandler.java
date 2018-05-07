@@ -1,13 +1,15 @@
 package com.testprojects.firstapp.controllers;
 
 import com.testprojects.firstapp.exception.BusinessException;
+import com.testprojects.firstapp.exception.ErrorMessage;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 
 @ControllerAdvice
@@ -15,37 +17,39 @@ public class ControllerExceptionHandler {
 
 
     //FOR REST CONTROLLERS
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ResponseBody
     @ExceptionHandler(Exception.class)
-    public String handleException(BusinessException e) {
+    public ResponseEntity handleException(BusinessException e) {
 
-        return e.getMessage() + ", CODE: " + e.getStatus();
+        ErrorMessage error = new ErrorMessage(e.getStatus(), e.getStatusCode(), e.getMessage());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        return new ResponseEntity(error, e.getStatus());
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
+
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public String handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
+    public ResponseEntity handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
 
-        return "'" + e.getParameterName() + "' parameter is not present! Status Code: ";
+        ErrorMessage error = new ErrorMessage(HttpStatus.BAD_REQUEST, 400, e.getLocalizedMessage());
+
+        return new ResponseEntity(error, error.getStatus());
     }
 
-    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
-    @ResponseBody
+
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public String handleMethodNotAllowedException( HttpRequestMethodNotSupportedException e) {
+    public ResponseEntity handleMethodNotAllowedException(HttpRequestMethodNotSupportedException e) {
 
+        StringBuilder info = new StringBuilder();
+        info.append(e.getMethod());
+        info.append(" method is not supported for this request. Please use: ");
+        e.getSupportedHttpMethods().forEach(t -> info.append(t + " "));
 
-        String supportedMethods="";
-        for (String iter: e.getSupportedMethods() ){
-            supportedMethods = "'"+iter+"' "+supportedMethods;
-        }
+        ErrorMessage error = new ErrorMessage(HttpStatus.METHOD_NOT_ALLOWED, 405, e.getLocalizedMessage(), info.toString());
 
-       return "'"+e.getMethod()+"' method is not allowed here. Please use "+supportedMethods;
-
+        return new ResponseEntity(error, error.getStatus());
     }
+
 
     //FOR "NORMAL" CONTROLLERS
 

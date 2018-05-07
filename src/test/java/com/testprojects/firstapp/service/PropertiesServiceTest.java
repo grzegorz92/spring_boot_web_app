@@ -17,7 +17,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class PropertiesServiceImplTest {
+public class PropertiesServiceTest {
 
     @Mock
     ChangesLog log;
@@ -36,12 +36,12 @@ public class PropertiesServiceImplTest {
 
     MockMultipartFile file;
 
-    PropertiesServiceImpl propertiesService;
+    PropertiesService propertiesService;
 
     @Before
    public void setUp() {
 
-        propertiesService = new PropertiesServiceImpl();
+        propertiesService = new PropertiesService();
         propertiesService.setProperties(this.properties);
         propertiesService.setLog(this.log);
         propertiesService.setLogger(this.logger);

@@ -1,7 +1,7 @@
 package com.testprojects.firstapp.controllers;
 
 import com.testprojects.firstapp.exception.BusinessException;
-import com.testprojects.firstapp.service.PropertiesServiceImpl;
+import com.testprojects.firstapp.service.PropertiesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -14,12 +14,12 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class PropertiesController {
 
-    private PropertiesServiceImpl propertiesService;
+    private PropertiesService propertiesService;
     private String loadedFileName="unknown_file.properties";
     private Logger logger =  LoggerFactory.getLogger(getClass().getName());
 
 
-    public PropertiesController(PropertiesServiceImpl propertiesService) {
+    public PropertiesController(PropertiesService propertiesService) {
         this.propertiesService = propertiesService;
     }
 

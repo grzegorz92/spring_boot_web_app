@@ -2,7 +2,7 @@ package com.testprojects.firstapp.controllers;
 
 
 import com.testprojects.firstapp.exception.BusinessException;
-import com.testprojects.firstapp.service.PropertiesServiceImpl;
+import com.testprojects.firstapp.service.PropertiesService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,15 +13,14 @@ import java.util.Map;
 @RequestMapping("/rest/properties")
 public class PropertiesRestController {
 
-    private PropertiesServiceImpl propertiesService;
+    private PropertiesService propertiesService;
     private String loadedFileName = "unknown.properties";
     public static final String BASE_URL = "/rest/properties";
 
 
-    public PropertiesRestController(PropertiesServiceImpl propertiesService) {//, Props props) {
+    public PropertiesRestController(PropertiesService propertiesService) {//, Props props) {
         this.propertiesService = propertiesService;
     }
-
 
     @PostMapping("/upload")
     public String uploadFile(@RequestBody MultipartFile file) throws BusinessException {

@@ -1,7 +1,7 @@
 package com.testprojects.firstapp.controllers;
 
 import com.testprojects.firstapp.exception.BusinessException;
-import com.testprojects.firstapp.service.PropertiesServiceImpl;
+import com.testprojects.firstapp.service.PropertiesService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class PropertiesControllerTest {
 
     @Mock
-    PropertiesServiceImpl propertiesService;
+    PropertiesService propertiesService;
 
     MockMvc mockMvc;
 
