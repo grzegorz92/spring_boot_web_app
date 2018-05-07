@@ -8,11 +8,11 @@ import org.springframework.http.HttpStatus;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorMessage {
 
-    @JsonProperty("Status")
-    private HttpStatus status;
-
     @JsonProperty("Status Code")
     private Integer statusCode;
+    
+    @JsonProperty("Error")
+    private HttpStatus status;
 
     @JsonProperty("Message")
     private String message;

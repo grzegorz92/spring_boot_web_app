@@ -1,9 +1,6 @@
 package com.testprojects.firstapp.exception;
 
-
 import org.springframework.http.HttpStatus;
-
-import java.util.List;
 
 public class BusinessException extends Exception{
 
