@@ -21,8 +21,6 @@ public class ControllerExceptionHandler {
     public ResponseEntity handleException(BusinessException e) {
 
         ErrorMessage error = new ErrorMessage(e.getStatus(), e.getStatusCode(), e.getMessage());
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
 
         return new ResponseEntity(error, e.getStatus());
     }
