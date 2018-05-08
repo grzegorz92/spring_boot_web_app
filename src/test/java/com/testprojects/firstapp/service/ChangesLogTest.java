@@ -11,6 +11,7 @@ public class ChangesLogTest {
 
 
     ChangesLog changesLog = new ChangesLog();
+    DateFormatter date = new DateFormatter();
 
     @Test
     public void logFileLoading_test(){
@@ -18,7 +19,7 @@ public class ChangesLogTest {
         String fileName = "file";
 
         List<String> logs = new ArrayList<>();
-        logs.add("CHANGES LOG for: "+changesLog.getCurrentDate());
+        logs.add("CHANGES LOG for: "+date.getCurrentDate());
         logs.add("LOADED FILE: "+fileName);
         logs.add("EDITIONS:");
 
