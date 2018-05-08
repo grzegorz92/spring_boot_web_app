@@ -1,9 +1,7 @@
 package com.testprojects.firstapp.controllers;
 
 import com.testprojects.firstapp.exception.BusinessException;
-import com.testprojects.firstapp.exception.ErrorMessage;
-import javassist.NotFoundException;
-import org.hibernate.annotations.NotFound;
+import com.testprojects.firstapp.service.ErrorMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;

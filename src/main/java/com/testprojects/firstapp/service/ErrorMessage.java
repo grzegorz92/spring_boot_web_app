@@ -1,4 +1,4 @@
-package com.testprojects.firstapp.exception;
+package com.testprojects.firstapp.service;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

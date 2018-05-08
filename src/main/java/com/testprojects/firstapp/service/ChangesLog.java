@@ -2,27 +2,25 @@ package com.testprojects.firstapp.service;
 
 import org.springframework.stereotype.Component;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Component
 public class ChangesLog {
 
     private List<String> changesLog = new ArrayList<>();
+    private DateFormatter date;
 
+    public ChangesLog() {
+    }
 
-    String getCurrentDate() {
-        SimpleDateFormat sdfDate = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");
-        Date now = new Date();
-        String strDate = sdfDate.format(now);
-        return strDate;
+    public ChangesLog(DateFormatter date) {
+        this.date = date;
     }
 
     public void logFileLoading(String fileName){
 
-        changesLog.add("CHANGES LOG for: "+getCurrentDate());
+        changesLog.add("CHANGES LOG for: "+date.getCurrentDate());
         changesLog.add("LOADED FILE: "+fileName);
         changesLog.add("EDITIONS:");
     }
