@@ -8,6 +8,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -18,12 +19,12 @@ public class ControllerExceptionHandler {
 
 
     //FOR REST CONTROLLERS
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(BusinessException.class)
     public ResponseEntity handleException(BusinessException e) {
 
-        ErrorMessage error = new ErrorMessage(e.getStatus(), e.getStatusCode(), e.getMessage());
+        ErrorMessage error = new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR, 500, e.getMessage());
 
-        return new ResponseEntity(error, e.getStatus());
+        return new ResponseEntity(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)

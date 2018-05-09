@@ -46,7 +46,7 @@ public class PropertiesRestControllerTest {
 
         propertiesRestController = new PropertiesRestController(propertiesService);
         mockMvc = MockMvcBuilders.standaloneSetup(propertiesRestController).setControllerAdvice(new ControllerExceptionHandler()).build(); //mocMvc configuration
-        file = new MockMultipartFile("file", "originalFileName","multipart/form-data", "hello".getBytes());
+        file = new MockMultipartFile("file", "originalFileName", "multipart/form-data", "hello".getBytes());
     }
 
 
@@ -56,30 +56,31 @@ public class PropertiesRestControllerTest {
         String loadedFileName = file.getOriginalFilename();
 
         mockMvc.perform(MockMvcRequestBuilders
-                .multipart(PropertiesRestController.BASE_URL+"/upload").file(file)
+                .multipart(PropertiesRestController.BASE_URL + "/upload").file(file)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string("File: "+ loadedFileName +" uploaded successfully"));
+                .andExpect(content().string("File: '" + loadedFileName + "' uploaded successfully!"));
 
         verify(propertiesService, times(1)).getFile(file);
 
-        assertEquals(file.getOriginalFilename(),propertiesRestController.getLoadedFileName());
+        assertEquals(file.getOriginalFilename(), propertiesRestController.getLoadedFileName());
     }
-
 
 
     @Test
     public void GetFileMethodTest_whenIOExceptionIsCaught() throws Exception {
 
-        doThrow(BusinessException.class).when(propertiesService).getFile(file);
+        doThrow(new BusinessException("Cannot load file!")).when(propertiesService).getFile(file);
 
         mockMvc.perform(MockMvcRequestBuilders
-                .multipart(PropertiesRestController.BASE_URL+"/upload").file(file)
+                .multipart(PropertiesRestController.BASE_URL + "/upload").file(file)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isNotFound());
-                //.andExpect error message
+                .andExpect(status().is5xxServerError())
+                .andExpect(jsonPath("$.['Status Code']", equalTo(500)))
+                .andExpect(jsonPath("$.Error", equalTo("INTERNAL_SERVER_ERROR")))
+                .andExpect(jsonPath("$.Message", equalTo("Cannot load file!")));
     }
 
     @Test
@@ -87,7 +88,7 @@ public class PropertiesRestControllerTest {
 
         Map<String, String> properties = new HashMap<>();
         properties.put("Name", "John");
-        properties.put("Last_Name","Smith");
+        properties.put("Last_Name", "Smith");
 
         when(propertiesService.getProperties()).thenReturn(properties);
 
@@ -107,22 +108,22 @@ public class PropertiesRestControllerTest {
 
         Map<String, String> properties = new HashMap<>();
         properties.put("Name", "John");
-        properties.put("Last_Name","Smith");
-        properties.put(key,value);
+        properties.put("Last_Name", "Smith");
+        properties.put(key, value);
 
         when(propertiesService.getProperties()).thenReturn(properties);
 
         mockMvc.perform(post(PropertiesRestController.BASE_URL)
-                .param("key",key)
-                .param("value",value)
+                .param("key", key)
+                .param("value", value)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.Name", equalTo("John")))
                 .andExpect(jsonPath("$.Last_Name", equalTo("Smith")))
-                .andExpect(jsonPath("$."+key, equalTo(value)));
+                .andExpect(jsonPath("$." + key, equalTo(value)));
 
-        verify(propertiesService,times(1)).addProperties(key, value);
+        verify(propertiesService, times(1)).addProperties(key, value);
     }
 
     @Test
@@ -134,21 +135,21 @@ public class PropertiesRestControllerTest {
 
         Map<String, String> properties = new HashMap<>();
         properties.put(key, newValue);
-        properties.put("Last_Name","Smith");
+        properties.put("Last_Name", "Smith");
 
         when(propertiesService.getProperties()).thenReturn(properties);
 
         mockMvc.perform(put(PropertiesRestController.BASE_URL)
-                .param("key",key)
-                .param("oldValue",oldValue)
-                .param("newValue",newValue)
+                .param("key", key)
+                .param("oldValue", oldValue)
+                .param("newValue", newValue)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$."+key, equalTo(newValue)))
+                .andExpect(jsonPath("$." + key, equalTo(newValue)))
                 .andExpect(jsonPath("$.Last_Name", equalTo("Smith")));
 
-        verify(propertiesService,times(1)).editProperties(key, oldValue, newValue);
+        verify(propertiesService, times(1)).editProperties(key, oldValue, newValue);
     }
 
     @Test
@@ -158,90 +159,97 @@ public class PropertiesRestControllerTest {
         String value = "John";
 
         Map<String, String> properties = new HashMap<>();
-        properties.put("Last_Name","Smith");
+        properties.put("Last_Name", "Smith");
 
         when(propertiesService.getProperties()).thenReturn(properties);
 
         mockMvc.perform(delete(PropertiesRestController.BASE_URL)
-                .param("key",key)
-                .param("value",value)
+                .param("key", key)
+                .param("value", value)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.Last_Name", equalTo("Smith")));
 
-        verify(propertiesService, times(1)).removeProperties(key,value);
+        verify(propertiesService, times(1)).removeProperties(key, value);
     }
 
     /////
     @Test
     public void saveFileAsProperties_whenIOExceptionIsNotCaught_thenPropertiesAreBeingSavedIntoPropertiesFile() throws Exception {
 
-        mockMvc.perform(get(PropertiesRestController.BASE_URL+"/save_properties"))
+        mockMvc.perform(get(PropertiesRestController.BASE_URL + "/save_properties"))
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        verify(propertiesService,times(1)).saveFileAsProperties(any(OutputStream.class));
+        verify(propertiesService, times(1)).saveFileAsProperties(any(OutputStream.class));
     }
 
     @Test
     public void saveFileAsProperties_whenIOExceptionIsCaught_thenBusinessExceptionIsThrown() throws Exception {
 
-        doThrow(BusinessException.class).when(propertiesService).saveFileAsProperties(any(OutputStream.class));
+        doThrow(new BusinessException("Cannot load file!")).when(propertiesService).saveFileAsProperties(any(OutputStream.class));
 
-        mockMvc.perform(get(PropertiesRestController.BASE_URL+"/save_properties"))
+        mockMvc.perform(get(PropertiesRestController.BASE_URL + "/save_properties"))
                 .andDo(print())
-                .andExpect(status().isNotFound());
-                //.andExpect error message
+                .andExpect(status().is5xxServerError())
+                .andExpect(jsonPath("$.['Status Code']", equalTo(500)))
+                .andExpect(jsonPath("$.Error", equalTo("INTERNAL_SERVER_ERROR")))
+                .andExpect(jsonPath("$.Message", equalTo("Cannot load file!")));
     }
 
 
     @Test
     public void saveFileAsJson_whenIOExceptionIsNotCaught_thenPropertiesAreBeingSavedIntoJsonFile() throws Exception {
 
-        mockMvc.perform(get(PropertiesRestController.BASE_URL+"/save_json"))
+        mockMvc.perform(get(PropertiesRestController.BASE_URL + "/save_json"))
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        verify(propertiesService,times(1)).saveFileAsJson(any(OutputStream.class));
+        verify(propertiesService, times(1)).saveFileAsJson(any(OutputStream.class));
     }
 
     @Test
     public void saveFileAsJson_whenIOExceptionIsCaught_thenBusinessExceptionIsThrown() throws Exception {
 
-        doThrow(BusinessException.class).when(propertiesService).saveFileAsJson(any(OutputStream.class));
+        doThrow(new BusinessException("Cannot load file!")).when(propertiesService).saveFileAsJson(any(OutputStream.class));
 
-        mockMvc.perform(get(PropertiesRestController.BASE_URL+"/save_json"))
+        mockMvc.perform(get(PropertiesRestController.BASE_URL + "/save_json"))
                 .andDo(print())
-                .andExpect(status().isNotFound());
-                //.andExpect error message
+                .andExpect(status().is5xxServerError())
+                .andExpect(jsonPath("$.['Status Code']", equalTo(500)))
+                .andExpect(jsonPath("$.Error", equalTo("INTERNAL_SERVER_ERROR")))
+                .andExpect(jsonPath("$.Message", equalTo("Cannot load file!")));
     }
+
 
     @Test
     public void saveFileAsYaml_whenIOExceptionIsNotCaught_thenPropertiesAreBeingSavedIntoYamlFile() throws Exception {
 
-        mockMvc.perform(get(PropertiesRestController.BASE_URL+"/save_yaml"))
+        mockMvc.perform(get(PropertiesRestController.BASE_URL + "/save_yaml"))
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        verify(propertiesService,times(1)).saveFileAsYaml(any(OutputStream.class));
+        verify(propertiesService, times(1)).saveFileAsYaml(any(OutputStream.class));
     }
 
     @Test
     public void saveFileAsYaml_whenIOExceptionIsCaught_thenBusinessExceptionIsThrown() throws Exception {
 
-        doThrow(BusinessException.class).when(propertiesService).saveFileAsYaml(any(OutputStream.class));
+        doThrow(new BusinessException("Cannot load file!")).when(propertiesService).saveFileAsYaml(any(OutputStream.class));
 
-        mockMvc.perform(get(PropertiesRestController.BASE_URL+"/save_yaml"))
+        mockMvc.perform(get(PropertiesRestController.BASE_URL + "/save_yaml"))
                 .andDo(print())
-                .andExpect(status().isNotFound());
-               // .andExpect error message
+                .andExpect(status().is5xxServerError())
+                .andExpect(jsonPath("$.['Status Code']", equalTo(500)))
+                .andExpect(jsonPath("$.Error", equalTo("INTERNAL_SERVER_ERROR")))
+                .andExpect(jsonPath("$.Message", equalTo("Cannot load file!")));
     }
 
     @Test
     public void downloadLog_whenIOExceptionIsNotCaught_thenLogIsBeingSavedIntoFile() throws Exception {
 
-        mockMvc.perform(get(PropertiesRestController.BASE_URL+"/download_log"))
+        mockMvc.perform(get(PropertiesRestController.BASE_URL + "/download_log"))
                 .andDo(print())
                 .andExpect(status().isOk());
 
@@ -251,13 +259,15 @@ public class PropertiesRestControllerTest {
     @Test
     public void downloadLog_whenIOExceptionIsCaught_thenBusinessExceptionIsThrown() throws Exception {
 
-        doThrow(BusinessException.class).when(propertiesService).downloadLog(any(OutputStream.class));
+        doThrow(new BusinessException("Cannot load file!")).when(propertiesService).downloadLog(any(OutputStream.class));
 
-        mockMvc.perform(get(PropertiesRestController.BASE_URL+"/download_log"))
+        mockMvc.perform(get(PropertiesRestController.BASE_URL + "/download_log"))
                 .andDo(print())
-                .andExpect(status().isNotFound());
-               // .andExpect error message
-
-
+                .andExpect(status().is5xxServerError())
+                .andExpect(jsonPath("$.['Status Code']", equalTo(500)))
+                .andExpect(jsonPath("$.Error", equalTo("INTERNAL_SERVER_ERROR")))
+                .andExpect(jsonPath("$.Message", equalTo("Cannot load file!")));
     }
+
+
 }

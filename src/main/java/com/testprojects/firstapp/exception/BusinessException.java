@@ -2,22 +2,16 @@ package com.testprojects.firstapp.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class BusinessException extends Exception{
+public class BusinessException extends Exception {
 
     private String message;
-    private HttpStatus status;
-    private Integer statusCode;
+
+    public BusinessException() {
+    }
 
     public BusinessException(String message) {
         super(message);
-        this.message=message;
-    }
-
-    public BusinessException(String message, HttpStatus status, Integer statusCode) {
-
         this.message = message;
-        this.status = status;
-        this.statusCode = statusCode;
     }
 
     @Override
@@ -25,11 +19,5 @@ public class BusinessException extends Exception{
         return message;
     }
 
-    public HttpStatus getStatus() {
-        return status;
-    }
-
-    public Integer getStatusCode() {
-        return statusCode;
-    }
 }
+

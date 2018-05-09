@@ -28,7 +28,7 @@ public class PropertiesRestController {
         propertiesService.getFile(file);
         loadedFileName = file.getOriginalFilename();
 
-        return "File '" + loadedFileName + "' uploaded successfully!";
+        return "File: '" + loadedFileName + "' uploaded successfully!";
     }
 
     @GetMapping

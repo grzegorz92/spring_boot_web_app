@@ -39,7 +39,7 @@ public class PropertiesService {
             log.logFileLoading(file.getOriginalFilename());
             logger.info("FILE LOADED: " + file.getOriginalFilename());
         } else {
-            throw new BusinessException("No file uploaded!",HttpStatus.INTERNAL_SERVER_ERROR,500);
+            throw new BusinessException("No file uploaded!");
         }
     }
 
