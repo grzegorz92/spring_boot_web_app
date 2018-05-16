@@ -9,14 +9,11 @@ import java.util.List;
 public class ChangesLog {
 
     private List<String> changesLog = new ArrayList<>();
-    private DateFormatter date;
+    private DateFormatter date = new DateFormatter();
 
     public ChangesLog() {
     }
 
-    public ChangesLog(DateFormatter date) {
-        this.date = date;
-    }
 
     public void logFileLoading(String fileName){
 

@@ -24,8 +24,6 @@ public class PropertiesService {
     private ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
 
 
-
-
     public void getFile(MultipartFile file) throws BusinessException {
 
         if (file != null) {
