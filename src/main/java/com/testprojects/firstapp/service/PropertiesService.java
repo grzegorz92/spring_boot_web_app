@@ -101,8 +101,7 @@ public class PropertiesService {
 
     public void addProperties(String key, String value) {
 
-        //Editing in ADD field and generating log from this operation disabled
-
+        //Editing in ADD field (and generating log from this operation) disabled
         if (properties.get(key) == null) {
             properties.setProperty(key, value);
             log.logPropertyAddition(key, value);

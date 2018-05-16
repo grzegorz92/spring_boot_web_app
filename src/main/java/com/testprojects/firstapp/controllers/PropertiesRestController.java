@@ -18,7 +18,7 @@ public class PropertiesRestController {
     public static final String BASE_URL = "/rest/properties";
 
 
-    public PropertiesRestController(PropertiesService propertiesService) {//, Props props) {
+    public PropertiesRestController(PropertiesService propertiesService) {
         this.propertiesService = propertiesService;
     }
 
@@ -95,3 +95,4 @@ public class PropertiesRestController {
         return loadedFileName;
     }
 }
+
