@@ -2,18 +2,22 @@ package com.testprojects.firstapp.controllers;
 
 
 import com.testprojects.firstapp.exception.BusinessException;
+import com.testprojects.firstapp.service.JsonFormatter;
 import com.testprojects.firstapp.service.PropertiesService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Map;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/rest/properties")
 public class PropertiesRestController {
 
     private PropertiesService propertiesService;
+    private JsonFormatter jsonFormatter = new JsonFormatter();
     private String loadedFileName = "unknown.properties";
     public static final String BASE_URL = "/rest/properties";
 
@@ -31,10 +35,13 @@ public class PropertiesRestController {
         return "File: '" + loadedFileName + "' uploaded successfully!";
     }
 
-    @GetMapping
-    public Map<String, String> getProperties() {
 
-        return propertiesService.getProperties();
+    @GetMapping
+   // public Map<String, String> getProperties() {
+    public List<Map<String,String>> getProperties(){
+        System.out.println("CONTROLLER: "+propertiesService.getProperties());
+        //return propertiesService.getProperties();
+        return jsonFormatter.formatPropertiesToJson(propertiesService);
     }
 
     @PostMapping
