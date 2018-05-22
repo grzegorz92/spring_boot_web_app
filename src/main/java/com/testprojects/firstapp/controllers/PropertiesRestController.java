@@ -39,7 +39,7 @@ public class PropertiesRestController {
     @GetMapping
    // public Map<String, String> getProperties() {
     public List<Map<String,String>> getProperties(){
-        System.out.println("CONTROLLER: "+propertiesService.getProperties());
+
         //return propertiesService.getProperties();
         return jsonFormatter.formatPropertiesToJson(propertiesService);
     }

@@ -22,6 +22,7 @@ public class PropertiesService {
     private Logger logger = LoggerFactory.getLogger(getClass().getName());
     private ObjectMapper jsonMapper = new ObjectMapper();
     private ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
+    private JsonFormatter jsonFormatter = new JsonFormatter();
 
 
     public void getFile(MultipartFile file) throws BusinessException {

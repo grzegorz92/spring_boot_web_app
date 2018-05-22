@@ -39,7 +39,7 @@ public class PropertiesServiceTest {
     PropertiesService propertiesService;
 
     @Before
-   public void setUp() {
+    public void setUp() {
 
         propertiesService = new PropertiesService();
         propertiesService.setProperties(this.properties);

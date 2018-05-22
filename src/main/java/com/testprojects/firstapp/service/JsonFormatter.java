@@ -5,35 +5,23 @@ import java.util.*;
 
 public class JsonFormatter {
 
-    private List<Map<String,String>> propertiesList = new ArrayList<>();
-    private Map<String, String> formatProperties = new HashMap<>();
+    private List<Map<String, String>> propertiesList = new ArrayList<>();
 
+    public List<Map<String, String>> formatPropertiesToJson(PropertiesService propertiesService) {
 
-    public List<Map<String,String>> formatPropertiesToJson(PropertiesService propertiesService){
+        propertiesList.clear();
 
-        System.out.println("HERE: "+propertiesService.getProperties());
-        for(Map.Entry<String,String> item: propertiesService.getProperties().entrySet()){
+        for (Map.Entry<String, String> item : propertiesService.getProperties().entrySet()) {
 
-            String key=item.getKey();
-            String value=item.getValue();
+            Map<String, String> formatProperties = new LinkedHashMap<>();
+            String key = item.getKey();
+            String value = item.getValue();
 
-            formatProperties.put("key",key);
-            System.out.println("KEY: "+key);
-            formatProperties.put("value",value);
-            System.out.println("VALUE: "+value);
+            formatProperties.put("key", key);
+            formatProperties.put("value", value);
             propertiesList.add(formatProperties);
-            System.out.println("LISTA"+formatProperties);
-            System.out.println();
+
         }
-        System.out.println(propertiesList);
-
-
         return propertiesList;
     }
-
-
-
-
-
-
 }
