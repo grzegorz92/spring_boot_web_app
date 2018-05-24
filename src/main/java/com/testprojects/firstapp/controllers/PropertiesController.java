@@ -2,6 +2,7 @@ package com.testprojects.firstapp.controllers;
 
 import com.testprojects.firstapp.exception.BusinessException;
 import com.testprojects.firstapp.service.PropertiesService;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -15,7 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 public class PropertiesController {
 
     private PropertiesService propertiesService;
-    private String loadedFileName="unknown_file.properties";
+    private String loadedFileName="unknown_file";
+    private String loadedFileNameNoExt = "unknown";
     private Logger logger =  LoggerFactory.getLogger(getClass().getName());
 
 
@@ -28,6 +30,7 @@ public class PropertiesController {
 
         propertiesService.getFile(file);
         loadedFileName = file.getOriginalFilename();
+        loadedFileNameNoExt = FilenameUtils.getBaseName(loadedFileName);
 
         return "redirect:/properties";
     }
@@ -65,7 +68,7 @@ public class PropertiesController {
     @RequestMapping("/save_properties")
     public void saveFileAsProperties(HttpServletResponse response) throws Exception {
 
-            response.setHeader("Content-disposition", "attachment; filename="+loadedFileName); // instead of this, in front: <a href="/save_properties" download="filename.properties">
+            response.setHeader("Content-disposition", "attachment; filename="+loadedFileNameNoExt+".properties"); // instead of this, in front: <a href="/save_properties" download="filename.properties">
 
             propertiesService.saveFileAsProperties(response.getOutputStream());
             response.flushBuffer();
@@ -74,7 +77,7 @@ public class PropertiesController {
     @RequestMapping("/save_yaml")
     public void saveFileAsYaml(HttpServletResponse response) throws Exception {
 
-            response.setHeader("Content-disposition", "attachment; filename=new_file.yaml");
+            response.setHeader("Content-disposition", "attachment; filename="+loadedFileNameNoExt+".yaml");
             propertiesService.saveFileAsYaml(response.getOutputStream());
     }
 
@@ -82,7 +85,7 @@ public class PropertiesController {
     public void saveFileAsJson(HttpServletResponse response) throws Exception {
 
 
-            response.setHeader("Content-disposition", "attachment; filename=new_file.json");
+            response.setHeader("Content-disposition", "attachment; filename="+loadedFileNameNoExt+".json");
             propertiesService.saveFileAsJson(response.getOutputStream());
     }
 

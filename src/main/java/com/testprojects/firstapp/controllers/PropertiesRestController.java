@@ -6,6 +6,7 @@ import com.testprojects.firstapp.service.JsonFormatter;
 import com.testprojects.firstapp.service.PropertiesService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.apache.commons.io.FilenameUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -18,7 +19,8 @@ public class PropertiesRestController {
 
     private PropertiesService propertiesService;
     private JsonFormatter jsonFormatter = new JsonFormatter();
-    private String loadedFileName = "unknown.properties";
+    private String loadedFileName = "unknown";
+    private String loadedFileNameNoExt = "unknown";
     public static final String BASE_URL = "/rest/properties";
 
 
@@ -31,6 +33,8 @@ public class PropertiesRestController {
 
         propertiesService.getFile(file);
         loadedFileName = file.getOriginalFilename();
+        loadedFileNameNoExt = FilenameUtils.getBaseName(loadedFileName);
+
 
         return "File: '" + loadedFileName + "' uploaded successfully!";
     }
@@ -71,7 +75,7 @@ public class PropertiesRestController {
     @GetMapping("/save_properties")
     public void saveFileAsProperties(HttpServletResponse response) throws Exception {
 
-        response.setHeader("Content-disposition", "attachment; filename=" + loadedFileName);
+        response.setHeader("Content-disposition", "attachment; filename=" + loadedFileNameNoExt+".properties");
 
         propertiesService.saveFileAsProperties(response.getOutputStream());
         response.flushBuffer();
@@ -80,14 +84,14 @@ public class PropertiesRestController {
     @GetMapping("/save_yaml")
     public void saveFileAsYaml(HttpServletResponse response) throws Exception {
 
-        response.setHeader("Content-disposition", "attachment; filename=new_file.yaml");
+        response.setHeader("Content-disposition", "attachment; filename="+loadedFileNameNoExt+".yaml");
         propertiesService.saveFileAsYaml(response.getOutputStream());
     }
 
     @GetMapping("/save_json")
     public void saveFileAsJson(HttpServletResponse response) throws Exception {
 
-        response.setHeader("Content-disposition", "attachment; filename=new_file.json");
+        response.setHeader("Content-disposition", "attachment; filename="+loadedFileNameNoExt+".json");
         propertiesService.saveFileAsJson(response.getOutputStream());
     }
 
