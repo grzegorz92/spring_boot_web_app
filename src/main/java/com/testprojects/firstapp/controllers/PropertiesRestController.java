@@ -2,8 +2,8 @@ package com.testprojects.firstapp.controllers;
 
 
 import com.testprojects.firstapp.exception.BusinessException;
-import com.testprojects.firstapp.service.JsonFormatter;
-import com.testprojects.firstapp.service.PropertiesService;
+import com.testprojects.firstapp.utils.JsonFormatter;
+import com.testprojects.firstapp.utils.PropertiesService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.apache.commons.io.FilenameUtils;
@@ -44,8 +44,10 @@ public class PropertiesRestController {
    // public Map<String, String> getProperties() {
     public List<Map<String,String>> getProperties(){
 
+        Map<String,String> propertiesMap = propertiesService.getProperties();
+
         //return propertiesService.getProperties();
-        return jsonFormatter.formatPropertiesToJson(propertiesService);
+        return jsonFormatter.formatPropertiesToJson(propertiesMap);
     }
 
     @PostMapping

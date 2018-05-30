@@ -1,7 +1,9 @@
 package com.testprojects.firstapp.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.testprojects.firstapp.exception.BusinessException;
-import com.testprojects.firstapp.service.PropertiesService;
+import com.testprojects.firstapp.utils.JsonFormatter;
+import com.testprojects.firstapp.utils.PropertiesService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,11 +12,15 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.io.File;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -35,6 +41,9 @@ public class PropertiesRestControllerTest {
     @Mock
     PropertiesService propertiesService;
 
+    @Mock
+    JsonFormatter jsonFormatter;
+
     MockMvc mockMvc;
 
     MockMultipartFile file;
@@ -45,7 +54,7 @@ public class PropertiesRestControllerTest {
     public void setUp() {
 
         propertiesRestController = new PropertiesRestController(propertiesService);
-        mockMvc = MockMvcBuilders.standaloneSetup(propertiesRestController).setControllerAdvice(new ControllerExceptionHandler()).build(); //mocMvc configuration
+        mockMvc = MockMvcBuilders.standaloneSetup(propertiesRestController).setControllerAdvice(new RestControllerExceptionHandler()).build(); //mocMvc configuration
         file = new MockMultipartFile("file", "originalFileName", "multipart/form-data", "hello".getBytes());
     }
 
@@ -86,18 +95,25 @@ public class PropertiesRestControllerTest {
     @Test
     public void getPropertiesTest() throws Exception {
 
+        ObjectMapper jsonMapper = new ObjectMapper();
         Map<String, String> properties = new HashMap<>();
-        properties.put("Name", "John");
-        properties.put("Last_Name", "Smith");
+        properties.put("key", "Name");
+        properties.put("value", "John");
 
-        when(propertiesService.getProperties()).thenReturn(properties);
+        List<Map<String,String>> listOfProperties = new ArrayList<>();
+        listOfProperties.add(properties);
+
+
+        when(jsonFormatter.formatPropertiesToJson(anyMap())).thenReturn(listOfProperties);
+
+        System.out.println(jsonFormatter.formatPropertiesToJson(properties));
 
         mockMvc.perform(get(PropertiesRestController.BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.Name", equalTo("John")))
-                .andExpect(jsonPath("$.Last_Name", equalTo("Smith")));
+                .andExpect(status().isOk());
+
+        assertEquals(listOfProperties,jsonFormatter.formatPropertiesToJson(anyMap()));
     }
 
     @Test

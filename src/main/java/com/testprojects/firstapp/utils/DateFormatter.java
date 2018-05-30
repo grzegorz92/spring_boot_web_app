@@ -1,4 +1,4 @@
-package com.testprojects.firstapp.service;
+package com.testprojects.firstapp.utils;
 
 import org.springframework.stereotype.Component;
 

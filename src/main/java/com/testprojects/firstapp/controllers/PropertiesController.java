@@ -1,7 +1,7 @@
 package com.testprojects.firstapp.controllers;
 
 import com.testprojects.firstapp.exception.BusinessException;
-import com.testprojects.firstapp.service.PropertiesService;
+import com.testprojects.firstapp.utils.PropertiesService;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

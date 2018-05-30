@@ -1,4 +1,4 @@
-package com.testprojects.firstapp.service;
+package com.testprojects.firstapp.utils;
 
 import org.junit.Test;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.testprojects.firstapp.service;
+package com.testprojects.firstapp.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.testprojects.firstapp.exception.BusinessException;

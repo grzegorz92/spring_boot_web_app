@@ -1,7 +1,7 @@
 package com.testprojects.firstapp.controllers;
 
 import com.testprojects.firstapp.exception.BusinessException;
-import com.testprojects.firstapp.service.PropertiesService;
+import com.testprojects.firstapp.utils.PropertiesService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -67,7 +67,7 @@ public class PropertiesControllerTest {
         mockMvc.perform(MockMvcRequestBuilders
                 .multipart("/uploading").file(file))
                 .andDo(print())
-                .andExpect(status().isNotFound())
+                .andExpect(status().is5xxServerError())
                 .andExpect(view().name("ER"));
     }
 
@@ -88,7 +88,7 @@ public class PropertiesControllerTest {
         mockMvc.perform(get("/properties/"))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(model().attribute("props", properties))
+                .andExpect(model().attribute("properties", properties))
                 .andExpect(model().attribute("changesLog", log))
                 .andExpect(view().name("properties"))
                 .andExpect(forwardedUrl("properties"));
@@ -167,7 +167,7 @@ public class PropertiesControllerTest {
 
         mockMvc.perform(get("/save_properties"))
                 .andDo(print())
-                .andExpect(status().isNotFound())
+                .andExpect(status().is5xxServerError())
                 .andExpect(view().name("ER"));
     }
 
