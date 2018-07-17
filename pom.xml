@@ -89,7 +89,7 @@
 			<version>${springfox-swagger.version}</version>
 		</dependency>
 
-		<!-- J-UNIT -->
+		<!-- J-UNIT & MOCKITO -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
@@ -102,6 +102,7 @@
 			<artifactId>mockito-all</artifactId>
 			<version>1.10.19</version>
 		</dependency>
+
         <dependency>
             <groupId>io.spring.sample</groupId>
             <artifactId>function-sample-azure</artifactId>

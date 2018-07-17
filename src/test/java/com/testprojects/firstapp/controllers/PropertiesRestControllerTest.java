@@ -76,7 +76,6 @@ public class PropertiesRestControllerTest {
         assertEquals(file.getOriginalFilename(), propertiesRestController.getLoadedFileName());
     }
 
-
     @Test
     public void GetFileMethodTest_whenIOExceptionIsCaught() throws Exception {
 

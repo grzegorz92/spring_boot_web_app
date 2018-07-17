@@ -1,6 +1,5 @@
 package com.testprojects.firstapp.controllers;
 
-
 import com.testprojects.firstapp.exception.BusinessException;
 import com.testprojects.firstapp.utils.JsonFormatter;
 import com.testprojects.firstapp.utils.PropertiesService;
@@ -23,7 +22,6 @@ public class PropertiesRestController {
     private String loadedFileNameNoExt = "unknown";
     public static final String BASE_URL = "/rest/properties";
 
-
     public PropertiesRestController(PropertiesService propertiesService) {
         this.propertiesService = propertiesService;
     }
@@ -35,10 +33,8 @@ public class PropertiesRestController {
         loadedFileName = file.getOriginalFilename();
         loadedFileNameNoExt = FilenameUtils.getBaseName(loadedFileName);
 
-
         return "File: '" + loadedFileName + "' uploaded successfully!";
     }
-
 
     @GetMapping
    // public Map<String, String> getProperties() {
@@ -108,4 +104,3 @@ public class PropertiesRestController {
         return loadedFileName;
     }
 }
-
