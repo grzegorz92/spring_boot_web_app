@@ -75,10 +75,8 @@ public class PropertiesServiceTest {
     @Test(expected = BusinessException.class)
     public void getFile_whenIOExceptionIsCaught_BusinessExceptionIsThrown() throws Exception {
 
-        doThrow(IOException.class).when(properties).load(any(InputStream.class));
+        doThrow(IOException.class).when(properties).load(any(InputStream.class)); //TODO Force Exception throwing? Instead of that, shouldn't we force to file=null and then Exception would be thrown automatically because else clause would be executed?
         propertiesService.getFile(file);
-
-        // Force Exception throwing? Instead of that, shouldn't we force to file=null and then Exception would be thrown automatically because else clause would be executed?
     }
 
     @Test
