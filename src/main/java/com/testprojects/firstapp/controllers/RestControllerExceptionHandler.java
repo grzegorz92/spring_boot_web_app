@@ -54,5 +54,4 @@ public class RestControllerExceptionHandler {
 
         return new ResponseEntity(error, error.getStatus());
     }
-
 }
